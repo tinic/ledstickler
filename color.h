@@ -7,7 +7,7 @@
 
 namespace ledstickler {
 
-    template<class T> struct rgba {
+    template<typename T> struct rgba {
 
         T r;
         T g;
@@ -86,12 +86,12 @@ namespace ledstickler {
         return dst;
     }
 
-    class color_convert {
+    template<typename T> class color_convert {
     public:
     
         constexpr color_convert() : sRGB2lRGB() {
-            for (size_t c = 0; c < 256; c++) {
-                double v = double(c) / 255.0;
+            for (size_t c = 0; c < colors_n; c++) {
+                double v = double(c) / static_cast<double>(colors_n - 1);
                 if (v > 0.04045) {
                     sRGB2lRGB[c] = std::pow( (v + 0.055) / 1.055, 2.4);
                 } else {
@@ -100,7 +100,7 @@ namespace ledstickler {
             }
         }
 
-        constexpr vec4 sRGB2CIELUV(const rgba<uint8_t> &in) const  {
+        constexpr vec4 sRGB2CIELUV(const rgba<T> &in) const  {
             double r = sRGB2lRGB[in.r];
             double g = sRGB2lRGB[in.g];
             double b = sRGB2lRGB[in.b];
@@ -154,7 +154,8 @@ namespace ledstickler {
         }
 
     private:
-        std::array<double, 256> sRGB2lRGB;
+        static constexpr size_t colors_n = 1UL<<(sizeof(T)*8);
+        std::array<double, colors_n> sRGB2lRGB;
     };
 };
 

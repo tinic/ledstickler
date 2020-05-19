@@ -6,30 +6,29 @@
 
 namespace ledstickler {
 
-static constexpr color_convert convert;
+static constexpr color_convert<uint8_t> convert;
 
-static constexpr vec4 cie_stop(const rgba<uint8_t> &color, double stop) {
+static constexpr vec4 srgb8_stop(const rgba<uint8_t> &color, double stop) {
     return vec4(convert.sRGB2CIELUV(color), stop);
 }
 
 static constexpr gradient gradient_rainbow((const vec4[7]){
-    cie_stop({0xff,0x00,0x00}, 0.00),
-    cie_stop({0xff,0xff,0x00}, 0.16),
-    cie_stop({0x00,0xff,0x00}, 0.33),
-    cie_stop({0x00,0xff,0xff}, 0.50),
-    cie_stop({0x00,0x00,0xff}, 0.66),
-    cie_stop({0xff,0x00,0xff}, 0.83),
-    cie_stop({0xff,0x00,0x00}, 1.00)},7);
+    srgb8_stop({0xff,0x00,0x00}, 0.00),
+    srgb8_stop({0xff,0xff,0x00}, 0.16),
+    srgb8_stop({0x00,0xff,0x00}, 0.33),
+    srgb8_stop({0x00,0xff,0xff}, 0.50),
+    srgb8_stop({0x00,0x00,0xff}, 0.66),
+    srgb8_stop({0xff,0x00,0xff}, 0.83),
+    srgb8_stop({0xff,0x00,0x00}, 1.00)},7);
 
 static constexpr gradient gradient_sunset((const vec4[3]){
-    cie_stop({0xff,0x3f,0x3f}, 0.00),
-    cie_stop({0x00,0xcf,0xff}, 0.50),
-    cie_stop({0xff,0x3f,0x3f}, 1.00)},3);
+    srgb8_stop({0xff,0x3f,0x3f}, 0.00),
+    srgb8_stop({0x00,0xcf,0xff}, 0.50),
+    srgb8_stop({0xff,0x3f,0x3f}, 1.00)},3);
 
 static constexpr gradient gradient_ramp((const vec4[2]){
-    cie_stop({0xff,0xff,0xff}, 0.00),
-    cie_stop({0x00,0x00,0x00}, 1.00)},2);
-
+    srgb8_stop({0xff,0xff,0xff}, 0.00),
+    srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
 static void test() {
     for (double c = 0.0; c < 1.0; c += 0.02 ) {
