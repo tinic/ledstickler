@@ -1,0 +1,5 @@
+cmake_minimum_required (VERSION 3.13)
+project(ledstickler)
+add_executable (ledstickler "")
+target_sources (ledstickler PRIVATE main.cpp)
+target_compile_options (ledstickler PRIVATE -std=c++17)
