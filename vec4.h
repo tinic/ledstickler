@@ -71,7 +71,7 @@ namespace ledstickler {
             this->w = _w;
         }
 
-        vec4 &operator=(const vec4& other) = default;
+        constexpr vec4 &operator=(const vec4& other) = default;
 
         constexpr vec4 &operator+=(double v) {
             this->x += v;
@@ -105,7 +105,7 @@ namespace ledstickler {
             return *this;
         }
 
-        vec4 &operator%=(double v) {
+        constexpr vec4 &operator%=(double v) {
             this->x = std::fmod(this->x, v);
             this->y = std::fmod(this->y, v);
             this->z = std::fmod(this->z, v);
@@ -145,7 +145,7 @@ namespace ledstickler {
             return *this;
         }
 
-        vec4 &operator%=(const vec4 &b) {
+        constexpr vec4 &operator%=(const vec4 &b) {
             this->x = std::fmod(this->x, b.x);
             this->y = std::fmod(this->y, b.y);
             this->z = std::fmod(this->z, b.z);
@@ -230,22 +230,22 @@ namespace ledstickler {
                         this->w/b.w);
         }
 
-        vec4 operator%(const vec4 &b) const {
-            return vec4(fmod(this->x,b.x),
-                        fmod(this->y,b.y),
-                        fmod(this->z,b.z),
-                        fmod(this->w,b.w));
+        constexpr vec4 operator%(const vec4 &b) const {
+            return vec4(std::fmod(this->x,b.x),
+                        std::fmod(this->y,b.y),
+                        std::fmod(this->z,b.z),
+                        std::fmod(this->w,b.w));
         }
         
-        double len() {
+        constexpr double len() {
             return std::sqrt(x*x + y*y + z*z);
         }
 
-        double len(const vec4 &a) {
+        constexpr double len(const vec4 &a) {
             return std::sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
         }
         
-        double dist(const vec4 &b) {
+        constexpr double dist(const vec4 &b) {
             double xd = std::fabs(this->x - b.x);
             double yd = std::fabs(this->y - b.y);
             double zd = std::fabs(this->z - b.z);
@@ -287,21 +287,21 @@ namespace ledstickler {
                         std::max(a.w, b.w));
         }
         
-        vec4 pow(double v) {
+        constexpr vec4 pow(double v) const {
             return vec4(std::pow(this->x, v),
                         std::pow(this->y, v),
                         std::pow(this->z, v),
                         std::pow(this->w, v));
         }
         
-        vec4 abs() {
+        constexpr vec4 abs() const {
             return vec4(std::fabs(this->x),
                         std::fabs(this->y),
                         std::fabs(this->z),
                         std::fabs(this->w));
         }
 
-        static vec4 abs(const vec4 &a) {
+        static constexpr vec4 abs(const vec4 &a) {
             return vec4(std::fabs(a.x),
                         std::fabs(a.y),
                         std::fabs(a.z),
@@ -344,21 +344,21 @@ namespace ledstickler {
             return vec4(this->z, this->y, 0.0, 0.0);
         }
 
-        vec4 sqrt() {
+        constexpr vec4 sqrt() {
             return vec4(std::sqrt(this->x),
                         std::sqrt(this->y),
                         std::sqrt(this->z),
                         std::sqrt(this->w));
         }
 
-        static vec4 sqrt(const vec4 &a) {
+        static constexpr vec4 sqrt(const vec4 &a) {
             return vec4(std::sqrt(a.x),
                         std::sqrt(a.y),
                         std::sqrt(a.z),
                         std::sqrt(a.w));
         }
         
-        vec4 rotate2d(double angle) {
+        constexpr vec4 rotate2d(double angle) {
             return vec4(
                 this->x * std::cos(angle) - this->y * std::sin(angle),
                 this->y * std::cos(angle) + this->x * std::sin(angle),
@@ -441,7 +441,7 @@ namespace ledstickler {
 
     private:
     
-        double reflect(double i) {
+        constexpr double reflect(double i) {
             i = std::fabs(i);
             if ((static_cast<int32_t>(i) & 1) == 0) {
                 i = std::fmod(i, 1.0);
