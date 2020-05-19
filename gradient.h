@@ -7,7 +7,7 @@
 
 namespace ledstickler {
 
-    class gradient {
+    template<size_t colors_2n = 8> class gradient {
     public:
         constexpr gradient(const vec4 stops[], const size_t n) {
             for (size_t c = 0; c < colors_n; c++) {
@@ -59,11 +59,9 @@ namespace ledstickler {
         }
 
     private:
-    
-        static constexpr size_t colors_n = 256;
-        static constexpr double colors_mul = 255.0;
-        static constexpr size_t colors_mask = 0xFF;
-
+        static constexpr size_t colors_n = 1UL << colors_2n;
+        static constexpr double colors_mul = static_cast<double>(colors_n - 1);
+        static constexpr size_t colors_mask = colors_n - 1;
         std::array<vec4, colors_n> colors;
     };
 }

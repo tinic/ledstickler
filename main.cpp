@@ -31,13 +31,21 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
 static void test() {
-    for (double c = 0.0; c < 1.0; c += 0.02 ) {
+    for (double c = 0.0; c < 1.0; c += 0.05 ) {
         auto col = convert.CIELUV2sRGB(gradient_sunset.clamp(c));
         printf("%f %0f %f %f\n", 
             col.x, 
             col.y, 
             col.z, 
             col.w);
+    }
+    for (double c = 0.0; c < 1.0; c += 0.05 ) {
+        const rgba<uint16_t> col(convert.CIELUV2sRGB(gradient_sunset.clamp(c)));
+        printf("%04x %04x %04x %04x\n", 
+            col.r, 
+            col.g, 
+            col.b, 
+            col.a);
     }
 }
 
