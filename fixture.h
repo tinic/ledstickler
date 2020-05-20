@@ -31,6 +31,10 @@ namespace ledstickler {
             address = a;
         }
 
+        void push(const std::string &s) {
+            name = s;
+        }
+
         void push(const fixture &f) {
             bounds.add(f.bounds);
             fixtures.push_back(f);
@@ -60,6 +64,25 @@ namespace ledstickler {
             bounds_stack.erase(bounds_stack.begin());
         }
 
+        void walk_fixtures(std::function<void (const std::vector<const fixture *> &fixture_stack)> func) const {
+            std::vector<const fixture *> fixture_stack;
+            fixture_stack.insert(fixture_stack.begin(), this);
+            walk_fixtures(func, fixture_stack);
+            func(fixture_stack);
+            fixture_stack.erase(fixture_stack.begin());
+        }
+
+        void walk_fixtures(std::function<void (const std::vector<const fixture *> &fixture_stack)> func, 
+            std::vector<const fixture *> &fixture_stack) const {
+            for (auto item : fixture_stack.front()->fixtures) {
+                fixture_stack.insert(fixture_stack.begin(), &item);
+                walk_fixtures(func, fixture_stack);
+                func(fixture_stack);
+                fixture_stack.erase(fixture_stack.begin());
+            }
+        }
+
+        std::string name;
         bounds6 bounds;
         ipv4 address;
         std::vector<fixture> fixtures;
