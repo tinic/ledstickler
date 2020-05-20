@@ -1,8 +1,14 @@
 #include <iostream>
+#include <vector>
+#include <cstdint>
+#include <functional>
+
 #include "./vec4.h"
 #include "./matrix4x4.h"
 #include "./gradient.h"
 #include "./color.h"
+#include "./timeline.h"
+#include "./fixture.h"
 
 namespace ledstickler {
 
@@ -30,6 +36,34 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
+
+static fixture make_vertical_fixture(const ipv4 &ip, vec4 pos) {
+    fixture fixture({ip});
+    for (size_t c = 0; c < 100; c++) {
+        fixture.push(pos);
+        pos += vec4(0.0, 0.0, -15.0, 0.0);
+    }
+    return fixture;
+}
+
+static fixture global_fixture(
+    make_vertical_fixture({192, 168, 1, 60}, {   0.0,    0.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 61}, {1000.0,    0.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 62}, {2000.0,    0.0, 2000.0}),
+
+    make_vertical_fixture({192, 168, 1, 63}, {   0.0, 1000.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 64}, {1000.0, 1000.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 65}, {2000.0, 1000.0, 2000.0}),
+
+    make_vertical_fixture({192, 168, 1, 66}, {   0.0, 2000.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 67}, {1000.0, 2000.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 68}, {2000.0, 2000.0, 2000.0}),
+
+    make_vertical_fixture({192, 168, 1, 69}, {   0.0, 3000.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 70}, {1000.0, 3000.0, 2000.0}),
+    make_vertical_fixture({192, 168, 1, 71}, {2000.0, 3000.0, 2000.0})
+);
+
 static void test() {
     for (double c = 0.0; c < 1.0; c += 0.05 ) {
         auto col = convert.CIELUV2sRGB(gradient_sunset.clamp(c));
@@ -39,6 +73,7 @@ static void test() {
             col.z, 
             col.w);
     }
+    
     for (double c = 0.0; c < 1.0; c += 0.05 ) {
         const rgba<uint16_t> col(convert.CIELUV2sRGB(gradient_sunset.clamp(c)));
         printf("%04x %04x %04x %04x\n", 
@@ -47,6 +82,19 @@ static void test() {
             col.b, 
             col.a);
     }
+    
+    global_fixture.walk_points( [=] (const std::vector<bounds6> &bounds_stack, const vec4& point) {
+        vec4 norm = (bounds_stack[0]).map_norm(point);
+        printf("%f %f %f\n", norm.x, norm.y, norm.z);
+    });
+    
+    printf("%f %f %f %f %f %f\n",
+        global_fixture.bounds.xmin,
+        global_fixture.bounds.xmax,
+        global_fixture.bounds.ymin,
+        global_fixture.bounds.ymax,
+        global_fixture.bounds.zmin,
+        global_fixture.bounds.zmax);
 }
 
 };  // namespace ledstickler {
