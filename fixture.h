@@ -5,6 +5,7 @@
 
 #include "./vec4.h"
 #include "./bounds.h"
+#include "./datagram.h"
 
 namespace ledstickler {
 
@@ -13,6 +14,13 @@ namespace ledstickler {
         uint8_t a1 = 0;
         uint8_t a2 = 0;
         uint8_t a3 = 0;
+        
+        uint32_t addr() const {
+            return  (uint32_t(a0)<<24)|
+                    (uint32_t(a0)<<16)|
+                    (uint32_t(a0)<< 8)|
+                    (uint32_t(a0)<< 0);
+        }
     };
     
     struct fixture {
@@ -89,6 +97,7 @@ namespace ledstickler {
         std::string name;
         bounds6 bounds;
         ipv4 address;
+        datagram_socket socket;
         std::vector<uint16_t> universes;
         std::vector<fixture> fixtures;
         std::vector<std::pair<vec4, vec4>> points;

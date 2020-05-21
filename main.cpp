@@ -39,9 +39,14 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
+constexpr size_t artnet_output_packet_size = 512 + 18;
+constexpr uint16_t artnet_port = 6454;
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
     fixture fixture({ip, name, universe0, universe1});
+    if (name.size() && ip.addr() != 0) {
+        fixture.socket.bind(artnet_port, ip.addr());
+    }
     for (size_t c = 0; c < 100; c++) {
         fixture.push(pos);
         pos += vec4(0.0, 0.0, -15.0, 0.0);
@@ -67,8 +72,6 @@ static fixture global_fixture(
     make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)
 );
 
-constexpr size_t artnet_output_packet_size = 512 + 18;
-constexpr uint16_t artnet_port = 6454;
 
 std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output_packets(const fixture &f) {
 
@@ -79,7 +82,6 @@ std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output
     std::vector<std::array<uint8_t, artnet_output_packet_size>> packets;
 
     auto iter = f.points.begin();
-    
     for (size_t len = f.points.size(); len > 0; ) {
         size_t chunk_len = std::min(artnet_dmx_len / (3 * 2), len);
         std::vector<std::pair<vec4, vec4>> chunk(iter, iter + chunk_len);
@@ -123,12 +125,17 @@ static void run() {
         });
 
         std::this_thread::sleep_until(frame_time);
-        frame_time += std::chrono::milliseconds(100);
+        frame_time += std::chrono::milliseconds(1000);
 
         global_fixture.walk_fixtures( [=] (const std::vector<const fixture *> &fixtures_stack) mutable {
-            if (fixtures_stack[0]->name.size()) {
-                printf("%s\n", fixtures_stack[0]->name.c_str());
-                auto packets = create_artnet_output_packets(*fixtures_stack[0]);
+            const fixture &f = *fixtures_stack[0];
+            if (!f.name.size()) {
+                return;
+            }
+            printf("%s\n", f.name.c_str());
+            auto packets = create_artnet_output_packets(f);
+            for (auto packet : packets) {
+                f.socket.send(static_cast<const uint8_t *>(packet.data()), packet.size());
             }
         });
     }
