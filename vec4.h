@@ -30,6 +30,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace ledstickler {
 
+    static constexpr inline double fabs_const(const double x) {
+        return x < 0 ? -x : +x;        
+    };
+
     struct vec4 {
         double x = 0.0;
         double y = 0.0;
@@ -246,16 +250,16 @@ namespace ledstickler {
         }
         
         constexpr double dist(const vec4 &b) {
-            double xd = std::fabs(this->x - b.x);
-            double yd = std::fabs(this->y - b.y);
-            double zd = std::fabs(this->z - b.z);
+            double xd = fabs_const(this->x - b.x);
+            double yd = fabs_const(this->y - b.y);
+            double zd = fabs_const(this->z - b.z);
             return std::sqrt(xd*xd + yd*yd + zd*zd);
         }
 
         static double dist(const vec4 &a, const vec4 &b) {
-            double xd = std::fabs(a.x - b.x);
-            double yd = std::fabs(a.y - b.y);
-            double zd = std::fabs(a.z - b.z);
+            double xd = fabs_const(a.x - b.x);
+            double yd = fabs_const(a.y - b.y);
+            double zd = fabs_const(a.z - b.z);
             return std::sqrt(xd*xd + yd*yd + zd*zd);
         }
 
@@ -295,17 +299,17 @@ namespace ledstickler {
         }
         
         constexpr vec4 abs() const {
-            return vec4(std::fabs(this->x),
-                        std::fabs(this->y),
-                        std::fabs(this->z),
-                        std::fabs(this->w));
+            return vec4(fabs_const(this->x),
+                        fabs_const(this->y),
+                        fabs_const(this->z),
+                        fabs_const(this->w));
         }
 
         static constexpr vec4 abs(const vec4 &a) {
-            return vec4(std::fabs(a.x),
-                        std::fabs(a.y),
-                        std::fabs(a.z),
-                        std::fabs(a.w));
+            return vec4(fabs_const(a.x),
+                        fabs_const(a.y),
+                        fabs_const(a.z),
+                        fabs_const(a.w));
         }
 
         constexpr vec4 xx00() const {
@@ -442,7 +446,7 @@ namespace ledstickler {
     private:
     
         constexpr double reflect(double i) {
-            i = std::fabs(i);
+            i = fabs_const(i);
             if ((static_cast<int32_t>(i) & 1) == 0) {
                 i = std::fmod(i, 1.0);
             } else {

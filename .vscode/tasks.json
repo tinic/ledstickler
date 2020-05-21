@@ -9,7 +9,8 @@
         {
             "label": "cmake",
             "type": "shell",
-            "command": "cmake -G Ninja .."
+            "command": "cmake -G Ninja ..",
+            "problemMatcher": []
         },
         {
             "label": "make",

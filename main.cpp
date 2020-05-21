@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <functional>
 #include <chrono>
+#include <thread>
 
 #include "./vec4.h"
 #include "./matrix4x4.h"
@@ -115,6 +116,7 @@ int main() {
     for (;;) {
         std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count() << "\n";
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     return 0;

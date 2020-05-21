@@ -33,23 +33,23 @@ namespace ledstickler {
         
         constexpr vec4 extent() const {
             return vec4(
-                std::fabs( xmax - xmin ),
-                std::fabs( ymax - ymin ),
-                std::fabs( zmax - zmin ));
+                fabs_const( xmax - xmin ),
+                fabs_const( ymax - ymin ),
+                fabs_const( zmax - zmin ));
         }        
         
         constexpr vec4 map_norm(const vec4 &v) const {
             return vec4(
-               ( std::fabs( xmax - xmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.x - xmin ) / ( xmax - xmin ) ) - 0.5 ) * 2.0 ) : 0.0,
-               ( std::fabs( ymax - ymin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.y - ymin ) / ( ymax - ymin ) ) - 0.5 ) * 2.0 ) : 0.0,
-               ( std::fabs( zmax - zmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.z - zmin ) / ( zmax - zmin ) ) - 0.5 ) * 2.0 ) : 0.0);
+               ( fabs_const( xmax - xmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.x - xmin ) / ( xmax - xmin ) ) - 0.5 ) * 2.0 ) : 0.0,
+               ( fabs_const( ymax - ymin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.y - ymin ) / ( ymax - ymin ) ) - 0.5 ) * 2.0 ) : 0.0,
+               ( fabs_const( zmax - zmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.z - zmin ) / ( zmax - zmin ) ) - 0.5 ) * 2.0 ) : 0.0);
         }
 
         constexpr vec4 map_unit(const vec4 &v) const {
             return vec4(
-               ( std::fabs( xmax - xmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.x - xmin ) / ( xmax - xmin ) ) : 0.0,
-               ( std::fabs( ymax - ymin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.y - ymin ) / ( ymax - ymin ) ) : 0.0,
-               ( std::fabs( zmax - zmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.z - zmin ) / ( zmax - zmin ) ) : 0.0);
+               ( fabs_const( xmax - xmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.x - xmin ) / ( xmax - xmin ) ) : 0.0,
+               ( fabs_const( ymax - ymin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.y - ymin ) / ( ymax - ymin ) ) : 0.0,
+               ( fabs_const( zmax - zmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.z - zmin ) / ( zmax - zmin ) ) : 0.0);
         }
     };
 };

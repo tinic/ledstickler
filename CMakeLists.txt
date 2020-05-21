@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.13)
 project(ledstickler)
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_COMPILER g++)
+
 add_executable (ledstickler "")
 target_sources (ledstickler PRIVATE main.cpp)
+
 target_compile_options (ledstickler PRIVATE -Wall -O3 -std=c++2a)
