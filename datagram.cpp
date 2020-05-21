@@ -29,7 +29,7 @@ void datagram_socket::bind(uint16_t port, uint32_t address, bool broadcast, bool
 
     memset(&outaddr,0,sizeof(outaddr));
     outaddr.sin_family = AF_INET;
-    outaddr.sin_addr.s_addr = address;
+    outaddr.sin_addr.s_addr = htonl(address);
     outaddr.sin_port = htons(port);
 
 #ifdef WIN32
