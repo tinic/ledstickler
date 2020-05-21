@@ -34,6 +34,10 @@ namespace ledstickler {
         void push(const std::string &s) {
             name = s;
         }
+        
+        void push(uint16_t universe) {
+            universes.push_back(universe);
+        }
 
         void push(const fixture &f) {
             bounds.add(f.bounds);
@@ -43,23 +47,23 @@ namespace ledstickler {
     
         void push(const vec4 &p) {
             bounds.add(p);
-            points.push_back(p);
+            points.push_back({0,p});
         }
 
-        void walk_points(std::function<void (const std::vector<bounds6> &bounds_stack, const vec4& point)> func) const {
+        void walk_points(std::function<vec4 (const std::vector<bounds6> &bounds_stack, const vec4& point)> func) {
             std::vector<bounds6> bounds_stack;
             walk_points(func, *this, bounds_stack);
         }
 
-        void walk_points(std::function<void (const std::vector<bounds6> &bounds_stack, const vec4& point)> func, 
-            const fixture &f, 
-            std::vector<bounds6> &bounds_stack) const {
+        void walk_points(std::function<vec4 (const std::vector<bounds6> &bounds_stack, const vec4& point)> func, 
+            fixture &f, 
+            std::vector<bounds6> &bounds_stack) {
             bounds_stack.insert(bounds_stack.begin(), f.bounds);
-            for (auto item : f.fixtures) {
+            for (auto& item : f.fixtures) {
                 walk_points(func, item, bounds_stack);
             }
-            for (auto item : f.points) {
-                func(bounds_stack, item);
+            for (auto& item : f.points) {
+                item.first = func(bounds_stack, item.second);
             }
             bounds_stack.erase(bounds_stack.begin());
         }
@@ -74,7 +78,7 @@ namespace ledstickler {
 
         void walk_fixtures(std::function<void (const std::vector<const fixture *> &fixture_stack)> func, 
             std::vector<const fixture *> &fixture_stack) const {
-            for (auto item : fixture_stack.front()->fixtures) {
+            for (auto& item : fixture_stack.front()->fixtures) {
                 fixture_stack.insert(fixture_stack.begin(), &item);
                 walk_fixtures(func, fixture_stack);
                 func(fixture_stack);
@@ -85,8 +89,9 @@ namespace ledstickler {
         std::string name;
         bounds6 bounds;
         ipv4 address;
+        std::vector<uint16_t> universes;
         std::vector<fixture> fixtures;
-        std::vector<vec4> points;
+        std::vector<std::pair<vec4, vec4>> points;
     };
 
 };
