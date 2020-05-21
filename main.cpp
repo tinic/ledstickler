@@ -4,6 +4,7 @@
 #include <functional>
 #include <chrono>
 #include <thread>
+#include <cstring>
 
 #include "./vec4.h"
 #include "./matrix4x4.h"
@@ -39,8 +40,8 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
 
-static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe) {
-    fixture fixture({ip, name, universe});
+static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
+    fixture fixture({ip, name, universe0, universe1});
     for (size_t c = 0; c < 100; c++) {
         fixture.push(pos);
         pos += vec4(0.0, 0.0, -15.0, 0.0);
@@ -49,75 +50,93 @@ static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, ve
 }
 
 static fixture global_fixture(
-    make_vertical_fixture("A00", {192, 168, 1, 60}, {   0.0,    0.0, 2000.0}, 0),
-    make_vertical_fixture("A01", {192, 168, 1, 61}, {1000.0,    0.0, 2000.0}, 0),
-    make_vertical_fixture("A02", {192, 168, 1, 62}, {2000.0,    0.0, 2000.0}, 0),
+    make_vertical_fixture("A00", {192, 168, 1, 60}, {   0.0,    0.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A01", {192, 168, 1, 61}, {1000.0,    0.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A02", {192, 168, 1, 62}, {2000.0,    0.0, 2000.0}, 0, 1),
 
-    make_vertical_fixture("A03", {192, 168, 1, 63}, {   0.0, 1000.0, 2000.0}, 0),
-    make_vertical_fixture("A04", {192, 168, 1, 64}, {1000.0, 1000.0, 2000.0}, 0),
-    make_vertical_fixture("A05", {192, 168, 1, 65}, {2000.0, 1000.0, 2000.0}, 0),
+    make_vertical_fixture("A03", {192, 168, 1, 63}, {   0.0, 1000.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A04", {192, 168, 1, 64}, {1000.0, 1000.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A05", {192, 168, 1, 65}, {2000.0, 1000.0, 2000.0}, 0, 1),
 
-    make_vertical_fixture("A06", {192, 168, 1, 66}, {   0.0, 2000.0, 2000.0}, 0),
-    make_vertical_fixture("A07", {192, 168, 1, 67}, {1000.0, 2000.0, 2000.0}, 0),
-    make_vertical_fixture("A08", {192, 168, 1, 68}, {2000.0, 2000.0, 2000.0}, 0),
+    make_vertical_fixture("A06", {192, 168, 1, 66}, {   0.0, 2000.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A07", {192, 168, 1, 67}, {1000.0, 2000.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A08", {192, 168, 1, 68}, {2000.0, 2000.0, 2000.0}, 0, 1),
 
-    make_vertical_fixture("A09", {192, 168, 1, 69}, {   0.0, 3000.0, 2000.0}, 0),
-    make_vertical_fixture("A10", {192, 168, 1, 70}, {1000.0, 3000.0, 2000.0}, 0),
-    make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0)
+    make_vertical_fixture("A09", {192, 168, 1, 69}, {   0.0, 3000.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A10", {192, 168, 1, 70}, {1000.0, 3000.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)
 );
 
-static void test() {
-    for (double c = 0.0; c < 1.05; c += 0.05 ) {
-        auto col = convert.CIELUV2sRGB(gradient_sunset.clamp(c));
-        printf("%f %0f %f %f\n", 
-            col.x, 
-            col.y, 
-            col.z, 
-            col.w);
-    }
-    
-    for (double c = 0.0; c < 1.05; c += 0.05 ) {
-        const rgba<uint16_t> col(convert.CIELUV2sRGB(gradient_sunset.clamp(c)));
-        printf("%04x %04x %04x %04x\n", 
-            col.r, 
-            col.g, 
-            col.b, 
-            col.a);
-    }
-    
-    vec4 all;
-    global_fixture.walk_points( [=] (const std::vector<bounds6> &bounds_stack, const vec4& point) mutable {
-        all += (bounds_stack[0]).map_norm(point);
-        return (bounds_stack[0]).map_norm(point);
-    });
-    printf("%f %f %f\n", all.x, all.y, all.z);
+constexpr size_t artnet_output_packet_size = 512 + 18;
+constexpr uint16_t artnet_port = 6454;
 
-    global_fixture.walk_fixtures( [=] (const std::vector<const fixture *> &fixtures_stack) mutable {
-        if (fixtures_stack[0]->name.size()) {
-            printf("%s\n", fixtures_stack[0]->name.c_str());
-        }
-    });
+std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output_packets(const fixture &f) {
+
+    constexpr uint16_t artnet_output_packet_id = 0x5000;
+    constexpr uint16_t artnet_output_packet_version = 14;
+    constexpr size_t artnet_dmx_len = 512;
+
+    std::vector<std::array<uint8_t, artnet_output_packet_size>> packets;
+
+    auto iter = f.points.begin();
     
-    printf("%f %f %f %f %f %f\n",
-        global_fixture.bounds.xmin,
-        global_fixture.bounds.xmax,
-        global_fixture.bounds.ymin,
-        global_fixture.bounds.ymax,
-        global_fixture.bounds.zmin,
-        global_fixture.bounds.zmax);
+    for (size_t len = f.points.size(); len > 0; ) {
+        size_t chunk_len = std::min(artnet_dmx_len / (3 * 2), len);
+        std::vector<std::pair<vec4, vec4>> chunk(iter, iter + chunk_len);
+        
+        std::array<uint8_t, artnet_output_packet_size> packet = { 0 };
+
+        packet.at( 8) = (artnet_output_packet_id >> 0) & 0xFF;
+        packet.at( 9) = (artnet_output_packet_id >> 8) & 0xFF;
+        packet.at(10) = ( artnet_output_packet_version >> 8 ) & 0xFF;
+        packet.at(11) = ( artnet_output_packet_version >> 0 ) & 0xFF;
+
+        memcpy(packet.data(), "Art-Net", 8);
+
+        size_t offset = 18;
+        for (auto item : chunk) {
+            const rgba<uint16_t> col(convert.CIELUV2sRGB(item.first));
+            packet.at(offset + 0) = ( col.r >> 8 ) & 0xFF; 
+            packet.at(offset + 1) = ( col.r >> 0 ) & 0xFF; 
+            packet.at(offset + 2) = ( col.g >> 8 ) & 0xFF; 
+            packet.at(offset + 3) = ( col.g >> 0 ) & 0xFF; 
+            packet.at(offset + 4) = ( col.b >> 8 ) & 0xFF; 
+            packet.at(offset + 5) = ( col.b >> 0 ) & 0xFF; 
+            offset += 6;
+        }
+
+        packets.push_back(packet);
+
+        len -= chunk_len;
+        iter += chunk_len;
+    }
+    
+    return packets;
+}
+
+static void run() {
+    std::chrono::system_clock::time_point frame_time = std::chrono::system_clock::now() + std::chrono::milliseconds(100);
+
+    for (;;) {
+        global_fixture.walk_points( [=] (const std::vector<bounds6> &bounds_stack, const vec4& point) mutable {
+            return (bounds_stack[0]).map_norm(point);
+        });
+
+        std::this_thread::sleep_until(frame_time);
+        frame_time += std::chrono::milliseconds(100);
+
+        global_fixture.walk_fixtures( [=] (const std::vector<const fixture *> &fixtures_stack) mutable {
+            if (fixtures_stack[0]->name.size()) {
+                printf("%s\n", fixtures_stack[0]->name.c_str());
+                auto packets = create_artnet_output_packets(*fixtures_stack[0]);
+            }
+        });
+    }
 }
 
 };  // namespace ledstickler {
 
 int main() {
-    ledstickler::test();
-
-    std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
-    for (;;) {
-        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count() << "\n";
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-
+    ledstickler::run();
     return 0;
 }
