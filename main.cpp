@@ -40,6 +40,7 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
 constexpr size_t artnet_output_packet_size = 512 + 18;
+constexpr size_t artnet_sync_packet_size = 14;
 constexpr uint16_t artnet_port = 6454;
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
@@ -72,26 +73,33 @@ static fixture global_fixture(
     make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)
 );
 
-
 std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output_packets(const fixture &f) {
+    std::vector<std::array<uint8_t, artnet_output_packet_size>> packets;
 
+    // https://art-net.org.uk/structure/streaming-packets/artdmx-packet-definition/
+	
     constexpr uint16_t artnet_output_packet_id = 0x5000;
     constexpr uint16_t artnet_output_packet_version = 14;
     constexpr size_t artnet_dmx_len = 512;
 
-    std::vector<std::array<uint8_t, artnet_output_packet_size>> packets;
-
+    uint16_t uni_index = 0;
     auto iter = f.points.begin();
     for (size_t len = f.points.size(); len > 0; ) {
         size_t chunk_len = std::min(artnet_dmx_len / (3 * 2), len);
         std::vector<std::pair<vec4, vec4>> chunk(iter, iter + chunk_len);
         
         std::array<uint8_t, artnet_output_packet_size> packet = { 0 };
-
+        
         packet.at( 8) = (artnet_output_packet_id >> 0) & 0xFF;
         packet.at( 9) = (artnet_output_packet_id >> 8) & 0xFF;
         packet.at(10) = ( artnet_output_packet_version >> 8 ) & 0xFF;
         packet.at(11) = ( artnet_output_packet_version >> 0 ) & 0xFF;
+        packet.at(12) = 0; // seq 
+        packet.at(13) = 0; // phy 
+        packet.at(14) = ( f.universes[uni_index] >> 0 ) & 0xFF;
+        packet.at(15) = ( f.universes[uni_index] >> 8 ) & 0xFF;
+        packet.at(16) = ( artnet_output_packet_size >> 8 ) & 0xFF;
+        packet.at(17) = ( artnet_output_packet_size >> 0 ) & 0xFF;
 
         memcpy(packet.data(), "Art-Net", 8);
 
@@ -111,23 +119,49 @@ std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output
 
         len -= chunk_len;
         iter += chunk_len;
+        uni_index++;
     }
     
     return packets;
+}
+
+constexpr std::array<uint8_t, artnet_sync_packet_size> make_arnet_sync_packet() {
+    std::array<uint8_t, artnet_sync_packet_size> packet = { 0 };
+
+    // https://art-net.org.uk/structure/streaming-packets/artsync-packet-definition/
+    
+    constexpr uint16_t artnet_output_packet_id = 0x5000;
+    constexpr uint16_t artnet_output_packet_version = 14;
+
+    packet.at( 0) = 'A';
+    packet.at( 1) = 'r';
+    packet.at( 2) = 't';
+    packet.at( 3) = '-';
+    packet.at( 4) = 'N';
+    packet.at( 5) = 'e';
+    packet.at( 6) = 't';
+    packet.at( 7) = 0;
+
+    packet.at( 8) = (artnet_output_packet_id >> 0) & 0xFF;
+    packet.at( 9) = (artnet_output_packet_id >> 8) & 0xFF;
+    packet.at(10) = ( artnet_output_packet_version >> 8 ) & 0xFF;
+    packet.at(11) = ( artnet_output_packet_version >> 0 ) & 0xFF;
+
+    return packet;
 }
 
 static void run() {
     std::chrono::system_clock::time_point frame_time = std::chrono::system_clock::now() + std::chrono::milliseconds(100);
 
     for (;;) {
-        global_fixture.walk_points( [=] (const std::vector<bounds6> &bounds_stack, const vec4& point) mutable {
+        global_fixture.walk_points( [] (const std::vector<bounds6> &bounds_stack, const vec4& point) {
             return (bounds_stack[0]).map_norm(point);
         });
 
         std::this_thread::sleep_until(frame_time);
         frame_time += std::chrono::milliseconds(1000);
 
-        global_fixture.walk_fixtures( [=] (const std::vector<const fixture *> &fixtures_stack) mutable {
+        global_fixture.walk_fixtures( [] (const std::vector<const fixture *> &fixtures_stack) {
             const fixture &f = *fixtures_stack[0];
             if (!f.name.size()) {
                 return;
@@ -137,6 +171,15 @@ static void run() {
             for (auto packet : packets) {
                 f.socket.send(static_cast<const uint8_t *>(packet.data()), packet.size());
             }
+        });
+
+        global_fixture.walk_fixtures( [] (const std::vector<const fixture *> &fixtures_stack) {
+            const fixture &f = *fixtures_stack[0];
+            if (!f.name.size()) {
+                return;
+            }
+            constexpr auto sync_packet = make_arnet_sync_packet();
+            f.socket.send(static_cast<const uint8_t *>(sync_packet.data()), artnet_sync_packet_size);
         });
     }
 }
