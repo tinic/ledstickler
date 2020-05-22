@@ -157,6 +157,11 @@ namespace ledstickler {
         static constexpr size_t colors_n = 1UL<<(sizeof(T)*8);
         std::array<double, colors_n> sRGB2lRGB;
     };
+
+    constexpr vec4 srgb8_stop(const rgba<uint8_t> &color, double stop) {
+        return vec4(color_convert<uint8_t>().sRGB2CIELUV(color), stop);
+    }
+
 };
 
 #endif  // #ifndef _COLOR_H_

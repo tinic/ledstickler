@@ -57,6 +57,7 @@ namespace ledstickler {
 
     class timeline {
     public:
+        void run(fixture &fixture);
     
         vec4 calc(double time, const std::vector<fixture *> &fixtures_stack, const vec4& point) {
             vec4 res = { 0 };

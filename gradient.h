@@ -4,6 +4,7 @@
 #include <array>
 
 #include "./vec4.h"
+#include "./color.h"
 
 namespace ledstickler {
 
@@ -64,6 +65,7 @@ namespace ledstickler {
         static constexpr size_t colors_mask = colors_n - 1;
         std::array<vec4, colors_n> colors;
     };
+
 }
 
 #endif  // #ifndef _GRADIENT_H_
