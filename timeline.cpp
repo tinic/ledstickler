@@ -14,11 +14,11 @@ void timeline::run(fixture &f) {
     std::chrono::system_clock::time_point start_time = std::chrono::system_clock::now();
     std::chrono::system_clock::time_point frame_time = start_time;
 
-    sort();
-
     for (;;) {
         f.walk_points( [start_time, frame_time, this] (const std::vector<fixture *> &fixtures_stack, const vec4& point) {
-            return calc(std::chrono::duration_cast<std::chrono::microseconds>(frame_time - start_time).count() / 1'000'000.0, fixtures_stack, point);
+            std::vector<const fixture *> fixtures_stack_const;
+            fixtures_stack_const.insert(fixtures_stack_const.begin(), fixtures_stack.begin(), fixtures_stack.end());
+            return calc(std::chrono::duration_cast<std::chrono::microseconds>(frame_time - start_time).count() / 1'000'000.0, fixtures_stack_const, point);
         });
 
         std::this_thread::sleep_until(frame_time);
@@ -47,24 +47,22 @@ void timeline::run(fixture &f) {
     }
 }
 
-vec4 timeline::calc(double time, const std::vector<fixture *> &fixtures_stack, const vec4& point) {
+vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point) {
     vec4 res = { 0 };
+    for (auto& item : spans) {
+        if (time >=  item.timing.x &&
+            time <  (item.timing.x + item.timing.y) ) {
+            vec4 col = item.calcFunc(item, fixtures_stack, point, time - item.timing.x);
+            res += col; // blend here!           
+        }
+    }
     for (auto& item : timelines) {
-        res += item.calc(timing.x - time, fixtures_stack, point);
+        if (time >=  timing.x &&
+            time <  (timing.x + timing.y) ) {
+            res += item.calc(time - timing.x, fixtures_stack, point);
+        }
     }
     return res;
-}
-
-void timeline::sort() {
-    std::sort(timelines.begin(), timelines.end(), [] (const timeline &a, const timeline &b) { 
-        return a.timing.x - b.timing.x; 
-    });
-    std::sort(spans.begin(), spans.end(), [] (const span &a, const span &b) { 
-        return a.timing.x - b.timing.x; 
-    });
-    for (auto& item : timelines) {
-        item.sort();
-    }
 }
 
 };

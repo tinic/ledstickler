@@ -59,14 +59,13 @@ namespace ledstickler {
     public:
         void run(fixture &fixture);
 
-        vec4 calc(double time, const std::vector<fixture *> &fixtures_stack, const vec4& point); 
+        vec4 calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point); 
            
         struct span {
             vec4 timing;
 
-            std::function<void (span &s)> startFunc;
-            std::function<vec4 (span &s)> calcFunc;
-            std::function<vec4 (span &s, vec4 &btm)> blendFunc;
+            std::function<vec4 (const span &s, const std::vector<const fixture *> &fixtures_stack, const vec4& point, double time)> calcFunc;
+            std::function<vec4 (const span &s, const vec4 &top, const vec4 &btm, double in_f, double out_f)> blendFunc;
 
             vec4 param0;
             vec4 param1;
@@ -98,10 +97,6 @@ namespace ledstickler {
         vec4 timing;
         std::vector<timeline> timelines;
         std::vector<span> spans;
-
-    private:
-    
-        void sort();
     };
 
 };

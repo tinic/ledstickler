@@ -32,33 +32,27 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
-static void nullStart(timeline::span &s) {
-    (void)s;
-}
-
-static vec4 nullCalc(timeline::span &s) {
-    (void)s;
+static vec4 nullCalc(const timeline::span &, const std::vector<const fixture *> &, const vec4&, double) {
     return vec4();
 }
 
-static vec4 nullBlend(timeline::span &s, vec4 b) {
-    (void)s;
-    return b;
+static vec4 addBlend(const timeline::span &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
+    return btm + top * in_f * out_f;
 }
 
 static timeline effect0({
-    timeline::span( { {  0.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
-    timeline::span( { { 10.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
-    timeline::span( { { 20.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
+    timeline::span{ {  0.0,   10.0,   0.0,   0.0 }, nullCalc, addBlend, vec4(), vec4(), vec4(), vec4() },
+    timeline::span{ { 10.0,   10.0,   0.0,   0.0 }, nullCalc, addBlend, vec4(), vec4(), vec4(), vec4() },
+    timeline::span{ { 20.0,   10.0,   0.0,   0.0 }, nullCalc, addBlend, vec4(), vec4(), vec4(), vec4() },
 });
 
 static timeline master({
-    timeline( { vec4(   0.0,   10.0,   0.0,   0.0 ), effect0 }),
-    timeline( { vec4(  10.0,   10.0,   0.0,   0.0 ), effect0 }),
+    timeline{ vec4(   0.0,   10.0,   0.0,   0.0 ), effect0 },
+    timeline{ vec4(  10.0,   10.0,   0.0,   0.0 ), effect0 },
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
-    fixture fixture({ip, name, universe0, universe1});
+    fixture fixture{ip, name, universe0, universe1};
     for (size_t c = 0; c < 100; c++) {
         fixture.push(pos);
         pos += vec4(0.0, 0.0, -15.0, 0.0);

@@ -18,6 +18,8 @@ namespace ledstickler {
     
         constexpr uint16_t artnet_output_packet_id = 0x5000;
         constexpr uint16_t artnet_output_packet_version = 14;
+        
+        // packet.insert(packet.begin(), std::to_array("Art-Net"));
 
         packet.at( 0) = 'A';
         packet.at( 1) = 'r';

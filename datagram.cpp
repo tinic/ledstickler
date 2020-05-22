@@ -30,7 +30,7 @@ datagram_socket::datagram_socket(uint16_t p, bool broadcast, bool reusesock) {
 
     if (broadcast) {
 #ifdef WIN32
-        (void)LLsetsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char*)&bOptVal, bOptLen);
+        (void)::setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char*)&bOptVal, bOptLen);
 #else  // #ifdef WIN32
         (void)::setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &OptVal, sizeof(OptVal));
 #endif  // #ifdef WIN32
