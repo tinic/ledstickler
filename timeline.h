@@ -58,15 +58,9 @@ namespace ledstickler {
     class timeline {
     public:
         void run(fixture &fixture);
-    
-        vec4 calc(double time, const std::vector<fixture *> &fixtures_stack, const vec4& point) {
-            vec4 res = { 0 };
-            for (auto& item : timelines) {
-                res += item.calc(timing.x - time, fixtures_stack, point);
-            }
-            return res;
-        }
-    
+
+        vec4 calc(double time, const std::vector<fixture *> &fixtures_stack, const vec4& point); 
+           
         struct span {
             vec4 timing;
 
@@ -104,9 +98,12 @@ namespace ledstickler {
         vec4 timing;
         std::vector<timeline> timelines;
         std::vector<span> spans;
+
+    private:
+    
+        void sort();
     };
 
 };
 
 #endif /* TIMELINE_H_ */
-

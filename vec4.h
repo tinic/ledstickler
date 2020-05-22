@@ -401,25 +401,25 @@ namespace ledstickler {
 
         static vec4 rcp(const vec4 &a) {
             return vec4((a.x != 0.0) ? (1.0/a.x) : 0.0,
-                          (a.y != 0.0) ? (1.0/a.y) : 0.0,
-                          (a.z != 0.0) ? (1.0/a.z) : 0.0,
-                          (a.w != 0.0) ? (1.0/a.w) : 0.0);
+                        (a.y != 0.0) ? (1.0/a.y) : 0.0,
+                        (a.z != 0.0) ? (1.0/a.z) : 0.0,
+                        (a.w != 0.0) ? (1.0/a.w) : 0.0);
         }
 
         constexpr vec4 lerp(const vec4 &b, double v) const {
             return vec4(
-              this->x * (1.0 - v) + b.x * v, 
-              this->y * (1.0 - v) + b.y * v, 
-              this->z * (1.0 - v) + b.z * v, 
-              this->w * (1.0 - v) + b.w * v);
+                this->x * (1.0 - v) + b.x * v, 
+                this->y * (1.0 - v) + b.y * v, 
+                this->z * (1.0 - v) + b.z * v, 
+                this->w * (1.0 - v) + b.w * v);
         }
 
         constexpr static vec4 lerp(const vec4 &a, const vec4 &b, double v) {
             return vec4(
-              a.x * (1.0 - v) + b.x * v, 
-              a.y * (1.0 - v) + b.y * v, 
-              a.z * (1.0 - v) + b.z * v, 
-              a.w * (1.0 - v) + b.w * v);
+                a.x * (1.0 - v) + b.x * v, 
+                a.y * (1.0 - v) + b.y * v, 
+                a.z * (1.0 - v) + b.z * v, 
+                a.w * (1.0 - v) + b.w * v);
         }
 
         constexpr vec4 clamp() const {

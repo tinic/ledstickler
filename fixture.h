@@ -60,17 +60,17 @@ namespace ledstickler {
 
         void walk_points(std::function<vec4 (const std::vector<fixture *> &fixture_stack, const vec4& point)> func) {
             std::vector<fixture *> fixtures_stack;
-            fixtures_stack.insert(fixtures_stack.begin(), this);
+            fixtures_stack.insert(fixtures_stack.cbegin(), this);
             walk_points(func, fixtures_stack);
-            fixtures_stack.erase(fixtures_stack.begin());
+            fixtures_stack.erase(fixtures_stack.cbegin());
         }
 
         void walk_points(std::function<vec4 (const std::vector<fixture *> &fixture_stack, const vec4& point)> func, 
             std::vector<fixture *> &fixtures_stack) {
             for (auto& item : fixtures_stack.front()->fixtures) {
-                fixtures_stack.insert(fixtures_stack.begin(), &item);
+                fixtures_stack.insert(fixtures_stack.cbegin(), &item);
                 walk_points(func, fixtures_stack);
-                fixtures_stack.erase(fixtures_stack.begin());
+                fixtures_stack.erase(fixtures_stack.cbegin());
             }
             for (auto& item : fixtures_stack.front()->points) {
                 item.first = func(fixtures_stack, item.second);
@@ -79,19 +79,19 @@ namespace ledstickler {
 
         void walk_fixtures(std::function<void (const std::vector<const fixture *> &fixture_stack)> func) const {
             std::vector<const fixture *> fixtures_stack;
-            fixtures_stack.insert(fixtures_stack.begin(), this);
+            fixtures_stack.insert(fixtures_stack.cbegin(), this);
             walk_fixtures(func, fixtures_stack);
             func(fixtures_stack);
-            fixtures_stack.erase(fixtures_stack.begin());
+            fixtures_stack.erase(fixtures_stack.cbegin());
         }
 
         void walk_fixtures(std::function<void (const std::vector<const fixture *> &fixture_stack)> func, 
             std::vector<const fixture *> &fixtures_stack) const {
             for (auto& item : fixtures_stack.front()->fixtures) {
-                fixtures_stack.insert(fixtures_stack.begin(), &item);
+                fixtures_stack.insert(fixtures_stack.cbegin(), &item);
                 walk_fixtures(func, fixtures_stack);
                 func(fixtures_stack);
-                fixtures_stack.erase(fixtures_stack.begin());
+                fixtures_stack.erase(fixtures_stack.cbegin());
             }
         }
 

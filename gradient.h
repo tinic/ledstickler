@@ -13,8 +13,8 @@ namespace ledstickler {
         constexpr gradient(const vec4 stops[], const size_t n) {
             for (size_t c = 0; c < colors_n; c++) {
                 double f = static_cast<double>(c) / static_cast<double>(colors_n - 1); 
-                vec4 a = stops[0];
-                vec4 b = stops[1];
+                auto a = stops[0];
+                auto b = stops[1];
                 if (n > 2) {
                     for (int32_t d = static_cast<int32_t>(n-2); d >= 0 ; d--) {
                         if ( f >= (stops[d].w) ) {
