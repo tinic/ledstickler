@@ -61,7 +61,7 @@ datagram_socket::~datagram_socket() {
     ::WSACleanup();
 #else // #ifdef WIN32
     ::close(sock);
-#endif  #ifdef WIN32
+#endif  // #ifdef WIN32
 }
 
 ssize_t datagram_socket::sendTo(uint32_t address, const uint8_t *data, size_t len) const {

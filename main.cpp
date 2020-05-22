@@ -41,6 +41,31 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
+static void nullStart(timeline::span &s) {
+}
+
+static vec4 nullCalc(timeline::span &s) {
+    return vec4();
+}
+
+static vec4 nullBlend(timeline::span &s, vec4 b) {
+    return b;
+}
+
+static timeline effect0({
+    timeline::span( { {  0.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
+    timeline::span( { { 10.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
+    timeline::span( { { 20.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } )
+});
+
+static timeline section0( { vec4(  0.0,   10.0,   0.0,   0.0 ), effect0 });
+static timeline section1( { vec4( 10.0,   10.0,   0.0,   0.0 ), effect0 });
+
+static timeline timeline({
+    section0,
+    section1,
+});
+
 constexpr size_t artnet_output_packet_size = 512 + 18;
 constexpr size_t artnet_sync_packet_size = 14;
 
@@ -152,8 +177,8 @@ static void run() {
     std::chrono::system_clock::time_point frame_time = std::chrono::system_clock::now() + std::chrono::milliseconds(100);
 
     for (;;) {
-        global_fixture.walk_points( [] (const std::vector<bounds6> &bounds_stack, const vec4& point) {
-            return (bounds_stack[0]).map_norm(point);
+        global_fixture.walk_points( [] (const std::vector<fixture *> &fixtures_stack, const vec4& point) {
+            return timeline.calc(0.0, fixtures_stack, point);
         });
 
         std::this_thread::sleep_until(frame_time);
