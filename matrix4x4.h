@@ -56,15 +56,15 @@ namespace ledstickler {
         }
 
         constexpr matrix4x4 operator*(const matrix4x4 &b) const {
-            matrix4x4 m; m.zero();
+            matrix4x4 o; o.zero();
             for (size_t c = 0; c < 4; c++) {
                 for (size_t d = 0; d < 4; d++) {
                     for (size_t e = 0; e < 4; e++) {
-                        m.m[c][d] += (*this).m[c][e] * b.m[c][d];
+                        o.m[c][d] += (*this).m[c][e] * b.m[c][d];
                     }
                 }
             }
-            return m;
+            return o;
         }
         
         constexpr bool operator==(const matrix4x4 &b) const {
@@ -99,13 +99,13 @@ namespace ledstickler {
         }        
         
         static constexpr matrix4x4 make_zero() {
-            matrix4x4 m;
+            matrix4x4 o;
             for (size_t c = 0; c < 4; c++) {
                 for (size_t d = 0; d < 4; d++) {
-                    m.m[c][d] = 0.0;                   
+                    o.m[c][d] = 0.0;                   
                 }
             }
-            return m;
+            return o;
         }
 
         constexpr matrix4x4 &scale(double x, double y, double z) {
@@ -135,11 +135,11 @@ namespace ledstickler {
         }
         
         static constexpr matrix4x4 make_scale(const vec4 &vec) {
-            matrix4x4 m;
-            m.m[0][0] = vec.x;
-            m.m[1][1] = vec.y;
-            m.m[2][2] = vec.z;
-            return m;
+            matrix4x4 o;
+            o.m[0][0] = vec.x;
+            o.m[1][1] = vec.y;
+            o.m[2][2] = vec.z;
+            return o;
         };
 
         constexpr matrix4x4 &translate(double x, double y, double z) {
@@ -150,11 +150,11 @@ namespace ledstickler {
         }
         
         static matrix4x4 make_translate(double x, double y, double z) {
-            matrix4x4 m;
-            m.m[3][0] = x;
-            m.m[3][1] = y;
-            m.m[3][2] = z;
-            return m;
+            matrix4x4 o;
+            o.m[3][0] = x;
+            o.m[3][1] = y;
+            o.m[3][2] = z;
+            return o;
         };
 
         constexpr matrix4x4 &translate(const vec4 &vec) {
@@ -165,11 +165,11 @@ namespace ledstickler {
         }
 
         static constexpr matrix4x4 make_translate(const vec4 &vec) {
-            matrix4x4 m;
-            m.m[3][0] = vec.x;
-            m.m[3][1] = vec.y;
-            m.m[3][2] = vec.z;
-            return m;
+            matrix4x4 o;
+            o.m[3][0] = vec.x;
+            o.m[3][1] = vec.y;
+            o.m[3][2] = vec.z;
+            return o;
         };
         
         

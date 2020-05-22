@@ -62,11 +62,11 @@ namespace ledstickler {
     }
 
     template<> inline constexpr  uint8_t rgba<uint8_t>::clamp_to_type(double v) {
-        return v < 0.0f ? uint8_t(0) : ( v > 1.0f ? uint8_t(0xFF) : uint8_t( v * 255.f ) );
+        return v < 0.0 ? uint8_t(0) : ( v > 1.0 ? uint8_t(0xFF) : uint8_t( v * 255.0 ) );
     }
 
     template<> inline constexpr uint16_t rgba<uint16_t>::clamp_to_type(double v) {
-        return v < 0.0f ? uint16_t(0) : ( v > 1.0f ? uint16_t(0xFFFF) : uint16_t( v * 65535.f ) );
+        return v < 0.0 ? uint16_t(0) : ( v > 1.0 ? uint16_t(0xFFFF) : uint16_t( v * 65535.0 ) );
     }
 
     template<> inline constexpr uint8_t *rgba<uint8_t>::write_grb_bytes(uint8_t *dst) {
@@ -131,7 +131,7 @@ namespace ledstickler {
     
             double Y = ( in.x + 0.16 ) * (1.0 / 1.16);
             double y = ( in.x <= 0.08 ) ? ( in.x * 0.1107056 ) : ( Y * Y * Y );
-            double x = (vp_13l > (1.0 / 65536.0)) ? ( 2.25 * y * up_13l * vp_13li ) : 0.0f;
+            double x = (vp_13l > (1.0 / 65536.0)) ? ( 2.25 * y * up_13l * vp_13li ) : 0.0;
             double z = (vp_13l > (1.0 / 65536.0)) ? ( y * ( 156.0 * in.x - 3.0 * up_13l - 20.0 * vp_13l ) * (1.0 / 4.0) * vp_13li ) : 0.0;
 
             double r =  3.2404542 * x + -1.5371385 * y + -0.4985314 * z;

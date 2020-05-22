@@ -33,13 +33,16 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
 static void nullStart(timeline::span &s) {
+    (void)s;
 }
 
 static vec4 nullCalc(timeline::span &s) {
+    (void)s;
     return vec4();
 }
 
 static vec4 nullBlend(timeline::span &s, vec4 b) {
+    (void)s;
     return b;
 }
 

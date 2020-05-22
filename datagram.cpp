@@ -44,7 +44,8 @@ datagram_socket::datagram_socket(uint16_t p, bool broadcast, bool reusesock) {
 #endif  // #ifdef WIN32
     }
 
-    sockaddr_in addr = { 0 };
+    sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(port);
@@ -65,7 +66,8 @@ datagram_socket::~datagram_socket() {
 }
 
 ssize_t datagram_socket::sendTo(uint32_t address, const uint8_t *data, size_t len) const {
-    sockaddr_in outaddr = { 0 };
+    sockaddr_in outaddr;
+    memset(&outaddr, 0, sizeof(outaddr));
     outaddr.sin_family = AF_INET;
     outaddr.sin_addr.s_addr = htonl(address);
     outaddr.sin_port = htons(port);

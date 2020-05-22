@@ -22,24 +22,24 @@ void timeline::run(fixture &f) {
         frame_time += std::chrono::milliseconds(1000);
 
         f.walk_fixtures( [] (const std::vector<const fixture *> &fixtures_stack) {
-            const fixture &f = *fixtures_stack[0];
-            if (!f.name.size()) {
+            const fixture &ft = *fixtures_stack[0];
+            if (!ft.name.size()) {
                 return;
             }
-            printf("%s\n", f.name.c_str());
-            auto packets = create_artnet_output_packets(f);
+            printf("%s\n", ft.name.c_str());
+            auto packets = create_artnet_output_packets(ft);
             for (auto packet : packets) {
-                socket.sendTo(f.address.addr(), static_cast<const uint8_t *>(packet.data()), packet.size());
+                socket.sendTo(ft.address.addr(), static_cast<const uint8_t *>(packet.data()), packet.size());
             }
         });
 
         f.walk_fixtures( [] (const std::vector<const fixture *> &fixtures_stack) {
-            const fixture &f = *fixtures_stack[0];
-            if (!f.name.size()) {
+            const fixture &ft = *fixtures_stack[0];
+            if (!ft.name.size()) {
                 return;
             }
             constexpr auto sync_packet = make_arnet_sync_packet();
-            socket.sendTo(f.address.addr(), static_cast<const uint8_t *>(sync_packet.data()), artnet_sync_packet_size);
+            socket.sendTo(ft.address.addr(), static_cast<const uint8_t *>(sync_packet.data()), artnet_sync_packet_size);
         });
     }
 }
