@@ -55,15 +55,12 @@ static vec4 nullBlend(timeline::span &s, vec4 b) {
 static timeline effect0({
     timeline::span( { {  0.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
     timeline::span( { { 10.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
-    timeline::span( { { 20.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } )
+    timeline::span( { { 20.0,   10.0,   0.0,   0.0 }, nullStart, nullCalc, nullBlend, vec4(), vec4(), vec4(), vec4() } ),
 });
 
-static timeline section0( { vec4(  0.0,   10.0,   0.0,   0.0 ), effect0 });
-static timeline section1( { vec4( 10.0,   10.0,   0.0,   0.0 ), effect0 });
-
-static timeline timeline({
-    section0,
-    section1,
+static timeline master({
+    timeline( { vec4(   0.0,   10.0,   0.0,   0.0 ), effect0 }),
+    timeline( { vec4(  10.0,   10.0,   0.0,   0.0 ), effect0 }),
 });
 
 constexpr size_t artnet_output_packet_size = 512 + 18;
@@ -178,7 +175,7 @@ static void run() {
 
     for (;;) {
         global_fixture.walk_points( [] (const std::vector<fixture *> &fixtures_stack, const vec4& point) {
-            return timeline.calc(0.0, fixtures_stack, point);
+            return master.calc(0.0, fixtures_stack, point);
         });
 
         std::this_thread::sleep_until(frame_time);
