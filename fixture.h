@@ -97,7 +97,6 @@ namespace ledstickler {
         std::string name;
         bounds6 bounds;
         ipv4 address;
-        datagram_socket socket;
         std::vector<uint16_t> universes;
         std::vector<fixture> fixtures;
         std::vector<std::pair<vec4, vec4>> points;

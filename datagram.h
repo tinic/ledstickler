@@ -19,9 +19,9 @@ namespace ledstickler {
 
     class datagram_socket {
     public:
-        void bind(uint16_t port, uint32_t address, bool broadcast = false, bool reusesock = false);
-
-        ssize_t send(const uint8_t *data, size_t len) const;
+        datagram_socket(uint16_t port, bool broadcast = false, bool reusesock = false);
+        ~datagram_socket();
+        ssize_t sendTo(uint32_t address, const uint8_t *data, size_t len) const;
 
 #ifdef WIN32
         static WSAData wsaData;
@@ -31,9 +31,8 @@ namespace ledstickler {
         int sock = 0;
 #endif  // #ifdef WIN32
 
-        sockaddr_in outaddr = { 0 };
-
     private:
+        uint16_t port;
         bool init = false;
     };
 

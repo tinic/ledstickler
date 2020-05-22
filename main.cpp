@@ -17,6 +17,8 @@ namespace ledstickler {
 
 static constexpr color_convert<uint8_t> convert;
 
+static datagram_socket socket(6454);
+
 static constexpr vec4 srgb8_stop(const rgba<uint8_t> &color, double stop) {
     return vec4(convert.sRGB2CIELUV(color), stop);
 }
@@ -41,13 +43,9 @@ static constexpr gradient gradient_ramp((const vec4[2]){
 
 constexpr size_t artnet_output_packet_size = 512 + 18;
 constexpr size_t artnet_sync_packet_size = 14;
-constexpr uint16_t artnet_port = 6454;
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
     fixture fixture({ip, name, universe0, universe1});
-    if (name.size() && ip.addr() != 0) {
-        fixture.socket.bind(artnet_port, ip.addr());
-    }
     for (size_t c = 0; c < 100; c++) {
         fixture.push(pos);
         pos += vec4(0.0, 0.0, -15.0, 0.0);
@@ -169,7 +167,7 @@ static void run() {
             printf("%s\n", f.name.c_str());
             auto packets = create_artnet_output_packets(f);
             for (auto packet : packets) {
-                f.socket.send(static_cast<const uint8_t *>(packet.data()), packet.size());
+                socket.sendTo(f.address.addr(), static_cast<const uint8_t *>(packet.data()), packet.size());
             }
         });
 
@@ -179,7 +177,7 @@ static void run() {
                 return;
             }
             constexpr auto sync_packet = make_arnet_sync_packet();
-            f.socket.send(static_cast<const uint8_t *>(sync_packet.data()), artnet_sync_packet_size);
+            socket.sendTo(f.address.addr(), static_cast<const uint8_t *>(sync_packet.data()), artnet_sync_packet_size);
         });
     }
 }
