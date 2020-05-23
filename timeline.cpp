@@ -29,7 +29,7 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
     std::chrono::system_clock::time_point frame_time = start_time;
 
     for (;;) {
-        double time = std::chrono::duration_cast<std::chrono::microseconds>(frame_time - start_time).count() / 1'000'000.0;
+        double time = double( std::chrono::duration_cast<std::chrono::microseconds>(frame_time - start_time).count() ) / 1'000'000.0;
     
         fflush(stdout); printf("\rtime (%fs)", time);
         span_count = 0;
@@ -49,7 +49,10 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
         frame_time += std::chrono::microseconds(frame_time_us);
 
         f.walk_fixtures( [] (const std::vector<const fixture *> &fixtures_stack) {
-            const auto &ft = *fixtures_stack[0];
+            if (fixtures_stack.size() == 0 || fixtures_stack.front() == nullptr) {
+                return;
+            }
+            const auto &ft = *fixtures_stack.front();
             if (!ft.name.size()) {
                 return;
             }
@@ -60,15 +63,16 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
         });
 
         f.walk_fixtures( [] (const std::vector<const fixture *> &fixtures_stack) {
-            const auto &ft = *fixtures_stack[0];
+            if (fixtures_stack.size() == 0 || fixtures_stack.front() == nullptr) {
+                return;
+            }
+            const auto &ft = *fixtures_stack.front();
             if (!ft.name.size()) {
                 return;
             }
-            
             std::for_each(ft.points.begin(), ft.points.end(), [] (auto item) { color_sum += item.first; } );
-            
             constexpr auto sync_packet = make_arnet_sync_packet();
-            socket.sendTo(ft.address.addr(), static_cast<const uint8_t *>(sync_packet.data()), artnet_sync_packet_size);
+            socket.sendTo(ft.address.addr(), sync_packet.data(), artnet_sync_packet_size);
         });
 
         static constexpr color_convert<uint8_t> convert;

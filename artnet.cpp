@@ -22,28 +22,28 @@ std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output
         
         std::array<uint8_t, artnet_output_packet_size> packet = { 0 };
         
-        packet.at( 8) = (artnet_output_packet_id >> 0) & 0xFF;
-        packet.at( 9) = (artnet_output_packet_id >> 8) & 0xFF;
-        packet.at(10) = ( artnet_output_packet_version >> 8 ) & 0xFF;
-        packet.at(11) = ( artnet_output_packet_version >> 0 ) & 0xFF;
+        packet.at( 8) = uint8_t( (artnet_output_packet_id >> 0) & 0xFF );
+        packet.at( 9) = uint8_t( (artnet_output_packet_id >> 8) & 0xFF );
+        packet.at(10) = uint8_t( ( artnet_output_packet_version >> 8 ) & 0xFF );
+        packet.at(11) = uint8_t( ( artnet_output_packet_version >> 0 ) & 0xFF );
         packet.at(12) = 0; // seq 
         packet.at(13) = 0; // phy 
-        packet.at(14) = ( f.universes[uni_index] >> 0 ) & 0xFF;
-        packet.at(15) = ( f.universes[uni_index] >> 8 ) & 0xFF;
-        packet.at(16) = ( artnet_output_packet_size >> 8 ) & 0xFF;
-        packet.at(17) = ( artnet_output_packet_size >> 0 ) & 0xFF;
+        packet.at(14) = uint8_t( ( f.universes[uni_index] >> 0 ) & 0xFF );
+        packet.at(15) = uint8_t( ( f.universes[uni_index] >> 8 ) & 0xFF );
+        packet.at(16) = uint8_t( ( artnet_output_packet_size >> 8 ) & 0xFF );
+        packet.at(17) = uint8_t( ( artnet_output_packet_size >> 0 ) & 0xFF );
 
         memcpy(packet.data(), "Art-Net", 8);
 
         size_t offset = 18;
         for (auto item : chunk) {
             const rgba<uint16_t> col(convert.CIELUV2sRGB(item.first));
-            packet.at(offset + 0) = ( col.r >> 8 ) & 0xFF; 
-            packet.at(offset + 1) = ( col.r >> 0 ) & 0xFF; 
-            packet.at(offset + 2) = ( col.g >> 8 ) & 0xFF; 
-            packet.at(offset + 3) = ( col.g >> 0 ) & 0xFF; 
-            packet.at(offset + 4) = ( col.b >> 8 ) & 0xFF; 
-            packet.at(offset + 5) = ( col.b >> 0 ) & 0xFF; 
+            packet.at(offset + 0) = uint8_t( ( col.r >> 8 ) & 0xFF ); 
+            packet.at(offset + 1) = uint8_t( ( col.r >> 0 ) & 0xFF ); 
+            packet.at(offset + 2) = uint8_t( ( col.g >> 8 ) & 0xFF ); 
+            packet.at(offset + 3) = uint8_t( ( col.g >> 0 ) & 0xFF ); 
+            packet.at(offset + 4) = uint8_t( ( col.b >> 8 ) & 0xFF ); 
+            packet.at(offset + 5) = uint8_t( ( col.b >> 0 ) & 0xFF ); 
             offset += 6;
         }
         

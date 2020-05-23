@@ -35,7 +35,10 @@ static constexpr gradient gradient_ramp((const vec4[]){
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
 static vec4 basicRamp(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
-    return gradient_ramp.reflect((fixtures[0]->bounds.map_unit(pos) + (time * 0.25)).z);
+    if (fixtures.size() == 0 || fixtures.front() == nullptr) {
+        return vec4();
+    }
+    return gradient_ramp.reflect((fixtures.front()->bounds.map_unit(pos) + (time * 0.25)).z);
 }
 
 static vec4 nullCalc(const span &, const std::vector<const fixture *> &, const vec4&, double) {

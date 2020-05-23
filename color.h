@@ -77,12 +77,12 @@ namespace ledstickler {
     }
 
     template<> inline constexpr uint8_t *rgba<uint16_t>::write_grb_bytes(uint8_t *dst) {
-        *dst++ = (g >> 8) & 0xFF;
-        *dst++ = (g >> 0) & 0xFF;
-        *dst++ = (r >> 8) & 0xFF;
-        *dst++ = (r >> 0) & 0xFF;
-        *dst++ = (b >> 8) & 0xFF;
-        *dst++ = (b >> 0) & 0xFF;
+        *dst++ = uint8_t((g >> 8) & 0xFF);
+        *dst++ = uint8_t((g >> 0) & 0xFF);
+        *dst++ = uint8_t((r >> 8) & 0xFF);
+        *dst++ = uint8_t((r >> 0) & 0xFF);
+        *dst++ = uint8_t((b >> 8) & 0xFF);
+        *dst++ = uint8_t((b >> 0) & 0xFF);
         return dst;
     }
 

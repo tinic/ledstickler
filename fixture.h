@@ -67,6 +67,9 @@ namespace ledstickler {
 
         void walk_points(std::function<vec4 (const std::vector<fixture *> &fixture_stack, const vec4& point)> func, 
             std::vector<fixture *> &fixtures_stack) {
+            if (fixtures_stack.size() == 0 || fixtures_stack.front() == nullptr) {
+                return;
+            }
             for (auto& item : fixtures_stack.front()->fixtures) {
                 fixtures_stack.insert(fixtures_stack.cbegin(), &item);
                 walk_points(func, fixtures_stack);
@@ -87,6 +90,9 @@ namespace ledstickler {
 
         void walk_fixtures(std::function<void (const std::vector<const fixture *> &fixture_stack)> func, 
             std::vector<const fixture *> &fixtures_stack) const {
+            if (fixtures_stack.size() == 0 || fixtures_stack.front() == nullptr) {
+                return;
+            }
             for (auto& item : fixtures_stack.front()->fixtures) {
                 fixtures_stack.insert(fixtures_stack.cbegin(), &item);
                 walk_fixtures(func, fixtures_stack);
