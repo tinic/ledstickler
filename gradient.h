@@ -45,6 +45,7 @@ namespace ledstickler {
                 i = 1.0 - i;
             }
             i *= colors_mul;
+            
             return vec4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], std::fmod(i, 1.0));
         }
         

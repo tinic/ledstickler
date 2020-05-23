@@ -76,6 +76,8 @@ namespace ledstickler {
         vec4 param1 = { 0 };
         vec4 param2 = { 0 };
         vec4 param3 = { 0 };
+
+        vec4 blend(double time, const vec4 &top, const vec4 &btm) const;
     };
 
     class timeline {
@@ -83,6 +85,7 @@ namespace ledstickler {
         void run(fixture &fixture);
 
         vec4 calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point, vec4 btm); 
+        vec4 blend(double time, const vec4 &top, const vec4 &btm) const;
 
         template<typename T, typename ... Tplus> void push(T item, Tplus ... rest) {
             push(item);
@@ -102,6 +105,7 @@ namespace ledstickler {
         }
 
         void push(const timeline &t) {
+            printf("%f\n", t.tim.start);
             timelines.push_back(t);
         }
 

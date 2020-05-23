@@ -32,24 +32,29 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
+static vec4 basicRamp(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
+    return gradient_ramp.reflect((fixtures[0]->bounds.map_unit(pos) + (time * 0.25)).z);
+}
+
 static vec4 nullCalc(const span &, const std::vector<const fixture *> &, const vec4&, double) {
     return vec4();
 }
 
 static timeline effect0({
-    span{ timing {   0.0,   30.0 }, nullCalc },
-    span{ timing {   0.0,   30.0 }, nullCalc },
-    span{ timing {   0.0,   30.0 }, nullCalc },
+    timing { 0.0, 30.0 },
+    span{ timing {    0.0,   30.0 }, basicRamp },
+    span{ timing {    0.0,   30.0 }, nullCalc }
 });
 
 static timeline master({
-    timeline { timing {   0.0,   32.0,   2.0,   2.0 }, effect0 },
-    timeline { timing {  30.0,   32.0,   2.0,   2.0 }, effect0 },
+    timing { 0.0, 30.0 },
+    timeline { timing {    0.0,   12.0, 2.0, 2.0 }, effect0 },
+    timeline { timing {   10.0,   22.0, 2.0, 2.0 }, effect0 }
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
     fixture fixture{ip, name, universe0, universe1};
-    for (size_t c = 0; c < 100; c++) {
+    for (size_t c = 0; c < 1; c++) {
         fixture.push(pos);
         pos += vec4(0.0, 0.0, -15.0, 0.0);
     }
@@ -57,7 +62,7 @@ static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, ve
 }
 
 static fixture global_fixture(
-    make_vertical_fixture("A00", {192, 168, 1, 60}, {   0.0,    0.0, 2000.0}, 0, 1),
+    make_vertical_fixture("A00", {192, 168, 1, 60}, {   0.0,    0.0, 2000.0}, 0, 1)/*,
     make_vertical_fixture("A01", {192, 168, 1, 61}, {1000.0,    0.0, 2000.0}, 0, 1),
     make_vertical_fixture("A02", {192, 168, 1, 62}, {2000.0,    0.0, 2000.0}, 0, 1),
 
@@ -71,7 +76,7 @@ static fixture global_fixture(
 
     make_vertical_fixture("A09", {192, 168, 1, 69}, {   0.0, 3000.0, 2000.0}, 0, 1),
     make_vertical_fixture("A10", {192, 168, 1, 70}, {1000.0, 3000.0, 2000.0}, 0, 1),
-    make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)
+    make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)*/
 );
 
 };  // namespace ledstickler {
