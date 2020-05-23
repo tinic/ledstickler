@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 #include "./timeline.h"
 #include "./artnet.h"
@@ -18,7 +19,7 @@ void timeline::run(fixture &f) {
         f.walk_points( [start_time, frame_time, this] (const std::vector<fixture *> &fixtures_stack, const vec4& point) {
             std::vector<const fixture *> fixtures_stack_const;
             fixtures_stack_const.insert(fixtures_stack_const.begin(), fixtures_stack.begin(), fixtures_stack.end());
-            return calc(std::chrono::duration_cast<std::chrono::microseconds>(frame_time - start_time).count() / 1'000'000.0, fixtures_stack_const, point);
+            return calc(std::chrono::duration_cast<std::chrono::microseconds>(frame_time - start_time).count() / 1'000'000.0, fixtures_stack_const, point, vec4());
         });
 
         std::this_thread::sleep_until(frame_time);
@@ -29,7 +30,6 @@ void timeline::run(fixture &f) {
             if (!ft.name.size()) {
                 return;
             }
-            printf("%s\n", ft.name.c_str());
             auto packets = create_artnet_output_packets(ft);
             for (auto packet : packets) {
                 socket.sendTo(ft.address.addr(), static_cast<const uint8_t *>(packet.data()), packet.size());
@@ -47,22 +47,30 @@ void timeline::run(fixture &f) {
     }
 }
 
-vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point) {
-    vec4 res = { 0 };
+vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point, vec4 btm) {
+    vec4 res;
     for (auto& item : spans) {
         if (time >=  item.timing.x &&
             time <  (item.timing.x + item.timing.y) ) {
             vec4 col = item.calcFunc(item, fixtures_stack, point, time - item.timing.x);
-            res += col; // blend here!           
+            double stime = time - item.timing.x;
+            double in_f = stime != 0.0 ? std::clamp(1.0 - (item.timing.z / stime), 0.0, 1.0) : 0.0;
+            double etime = stime - (item.timing.y - item.timing.w);
+            double out_f = etime != 0.0 ? std::clamp(1.0 - (item.timing.w / etime), 0.0, 1.0) : 1.0;
+            res = item.blendFunc(item, col, res, in_f, out_f);
         }
     }
     for (auto& item : timelines) {
         if (time >=  timing.x &&
             time <  (timing.x + timing.y) ) {
-            res += item.calc(time - timing.x, fixtures_stack, point);
+            res = item.calc(time - timing.x, fixtures_stack, point, res);
         }
     }
-    return res;
+    double stime = time - timing.x;
+    double in_f = stime != 0.0 ? std::clamp(1.0 - (timing.z / stime), 0.0, 1.0) : 0.0;
+    double etime = stime - (timing.y - timing.w);
+    double out_f = etime != 0.0 ? std::clamp(1/.0 - (timing.w / etime), 0.0, 1.0) : 1.0;
+    return blendFunc(res, btm, in_f, out_f);
 }
 
 };

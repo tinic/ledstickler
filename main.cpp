@@ -36,19 +36,15 @@ static vec4 nullCalc(const timeline::span &, const std::vector<const fixture *> 
     return vec4();
 }
 
-static vec4 addBlend(const timeline::span &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
-    return btm + top * in_f * out_f;
-}
-
 static timeline effect0({
-    timeline::span{ {  0.0,   10.0,   0.0,   0.0 }, nullCalc, addBlend, vec4(), vec4(), vec4(), vec4() },
-    timeline::span{ { 10.0,   10.0,   0.0,   0.0 }, nullCalc, addBlend, vec4(), vec4(), vec4(), vec4() },
-    timeline::span{ { 20.0,   10.0,   0.0,   0.0 }, nullCalc, addBlend, vec4(), vec4(), vec4(), vec4() },
+    timeline::span{ {  0.0,   10.0,   0.0,   0.0 }, nullCalc },
+    timeline::span{ { 10.0,   10.0,   0.0,   0.0 }, nullCalc },
+    timeline::span{ { 20.0,   10.0,   0.0,   0.0 }, nullCalc },
 });
 
 static timeline master({
-    timeline{ vec4(   0.0,   10.0,   0.0,   0.0 ), effect0 },
-    timeline{ vec4(  10.0,   10.0,   0.0,   0.0 ), effect0 },
+    timeline{ vec4(   0.0,   30.0,   0.0,   0.0 ), effect0 },
+    timeline{ vec4(  30.0,   30.0,   0.0,   0.0 ), effect0 },
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {

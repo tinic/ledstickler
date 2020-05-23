@@ -59,18 +59,22 @@ namespace ledstickler {
     public:
         void run(fixture &fixture);
 
-        vec4 calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point); 
+        vec4 calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point, vec4 btm); 
            
         struct span {
             vec4 timing;
 
             std::function<vec4 (const span &s, const std::vector<const fixture *> &fixtures_stack, const vec4& point, double time)> calcFunc;
-            std::function<vec4 (const span &s, const vec4 &top, const vec4 &btm, double in_f, double out_f)> blendFunc;
+            
+            std::function<vec4 (const span &s, const vec4 &top, const vec4 &btm, double in_f, double out_f)> blendFunc = 
+                [] (const span &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
+                    return btm + top * in_f * out_f;
+                };
 
-            vec4 param0;
-            vec4 param1;
-            vec4 param2;
-            vec4 param3;
+            vec4 param0 = { 0 };
+            vec4 param1 = { 0 };
+            vec4 param2 = { 0 };
+            vec4 param3 = { 0 };
         };
 
         template<typename T, typename ... Tplus> void push(T item, Tplus ... rest) {
@@ -94,9 +98,17 @@ namespace ledstickler {
             timelines.push_back(t);
         }
 
+        void push(std::function<vec4 (const vec4 &top, const vec4 &btm, double in_f, double out_f)> f) {
+            blendFunc = f;
+        }
+
         vec4 timing;
         std::vector<timeline> timelines;
         std::vector<span> spans;
+        std::function<vec4 (const vec4 &top, const vec4 &btm, double in_f, double out_f)> blendFunc =
+            [] (const vec4 &top, const vec4 &btm, double in_f, double out_f) {
+                return btm + top * in_f * out_f;
+            };
     };
 
 };
