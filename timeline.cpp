@@ -17,10 +17,10 @@ static size_t span_count = 0;
 static size_t point_count = 0;
 static vec4 color_sum = { 0 };
 
-template <typename T> static vec4 blend(const T &target, const timing &tim, double time, const vec4 &top, const vec4 &btm) {
-    double in_f = tim.lead_in > 0 ? ( time != 0.0 ? std::clamp(time / tim.lead_in, 0.0, 1.0) : 0.0 ) : 1.0;
-    double etime = time - (tim.duration - tim.lead_out);
-    double out_f = tim.lead_out > 0 ? ( etime != 0.0 ? std::clamp(1.0 - (etime / tim.lead_out) , 0.0, 1.0) : 1.0) : 1.0;
+template <typename T> static vec4 blend(const T &target, double time, const vec4 &top, const vec4 &btm) {
+    double in_f = target.tim.lead_in > 0 ? ( time != 0.0 ? std::clamp(time / target.tim.lead_in, 0.0, 1.0) : 0.0 ) : 1.0;
+    double etime = time - (target.tim.duration - target.tim.lead_out);
+    double out_f = target.tim.lead_out > 0 ? ( etime != 0.0 ? std::clamp(1.0 - (etime / target.tim.lead_out) , 0.0, 1.0) : 1.0) : 1.0;
     return target.blendFunc(target, top, btm, in_f, out_f);
 }
 
@@ -87,7 +87,7 @@ vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_st
         if (time >=  item.tim.start &&
             time <  (item.tim.start + item.tim.duration) ) {
             span_count ++;
-            res = blend(item, item.tim, time - item.tim.start, item.calcFunc(item, fixtures_stack, point, time - item.tim.start), res);
+            res = blend(item, time - item.tim.start, item.calcFunc(item, fixtures_stack, point, time - item.tim.start), res);
         }
     }
     for (auto& item : timelines) {
@@ -96,7 +96,7 @@ vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_st
             res = item.calc(time - item.tim.start, fixtures_stack, point, res);
         }
     }
-    return blend(*this, tim, time, res, btm);
+    return blend(*this, time, res, btm);
 }
 
 }
