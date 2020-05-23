@@ -36,11 +36,9 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
         point_count = 0;
         color_sum = { 0 };
         
-        f.walk_points( [time, this] (const std::vector<fixture *> &fixtures_stack, const vec4& point) {
+        f.walk_points( [time, this] (const std::vector<const fixture *> &fixtures_stack, const vec4& point) {
             point_count ++;
-            std::vector<const fixture *> fixtures_stack_const;
-            fixtures_stack_const.insert(fixtures_stack_const.begin(), fixtures_stack.begin(), fixtures_stack.end());
-            return calc(time, fixtures_stack_const, point, vec4());
+            return calc(time, fixtures_stack, point, vec4());
         });
         
         printf(" active spans (%d)", int(span_count / point_count));

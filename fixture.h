@@ -58,25 +58,31 @@ namespace ledstickler {
             points.push_back({0,p});
         }
 
-        void walk_points(std::function<vec4 (const std::vector<fixture *> &fixture_stack, const vec4& point)> func) {
+        void walk_points(std::function<vec4 (const std::vector<const fixture *> &fixture_stack, const vec4& point)> func) {
             std::vector<fixture *> fixtures_stack;
+            std::vector<const fixture *> fixtures_stack_const;
             fixtures_stack.insert(fixtures_stack.cbegin(), this);
-            walk_points(func, fixtures_stack);
+            fixtures_stack_const.insert(fixtures_stack_const.cbegin(), this);
+            walk_points(func, fixtures_stack, fixtures_stack_const);
             fixtures_stack.erase(fixtures_stack.cbegin());
+            fixtures_stack_const.erase(fixtures_stack_const.cbegin());
         }
 
-        void walk_points(std::function<vec4 (const std::vector<fixture *> &fixture_stack, const vec4& point)> func, 
-            std::vector<fixture *> &fixtures_stack) {
+        void walk_points(std::function<vec4 (const std::vector<const fixture *> &fixture_stack, const vec4& point)> func, 
+            std::vector<fixture *> &fixtures_stack,
+            std::vector<const fixture *> &fixtures_stack_const) {
             if (fixtures_stack.size() == 0 || fixtures_stack.front() == nullptr) {
                 return;
             }
             for (auto& item : fixtures_stack.front()->fixtures) {
                 fixtures_stack.insert(fixtures_stack.cbegin(), &item);
-                walk_points(func, fixtures_stack);
+                fixtures_stack_const.insert(fixtures_stack_const.cbegin(), &item);
+                walk_points(func, fixtures_stack, fixtures_stack_const);
                 fixtures_stack.erase(fixtures_stack.cbegin());
+                fixtures_stack_const.erase(fixtures_stack_const.cbegin());
             }
             for (auto& item : fixtures_stack.front()->points) {
-                item.first = func(fixtures_stack, item.second);
+                item.first = func(fixtures_stack_const, item.second);
             }
         }
 
