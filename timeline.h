@@ -55,27 +55,34 @@ namespace ledstickler {
         }
     };
 
+    struct timing {
+        double start = 0.0;
+        double duration = 0.0;
+        double lead_in = 0.0;
+        double lead_out = 0.0;
+    };
+    
+    struct span {
+        timing tim;
+
+        std::function<vec4 (const span &s, const std::vector<const fixture *> &fixtures_stack, const vec4& point, double time)> calcFunc;
+        
+        std::function<vec4 (const span &s, const vec4 &top, const vec4 &btm, double in_f, double out_f)> blendFunc = 
+            [] (const span &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
+                return btm + top * in_f * out_f;
+            };
+
+        vec4 param0 = { 0 };
+        vec4 param1 = { 0 };
+        vec4 param2 = { 0 };
+        vec4 param3 = { 0 };
+    };
+
     class timeline {
     public:
         void run(fixture &fixture);
 
         vec4 calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point, vec4 btm); 
-           
-        struct span {
-            vec4 timing;
-
-            std::function<vec4 (const span &s, const std::vector<const fixture *> &fixtures_stack, const vec4& point, double time)> calcFunc;
-            
-            std::function<vec4 (const span &s, const vec4 &top, const vec4 &btm, double in_f, double out_f)> blendFunc = 
-                [] (const span &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
-                    return btm + top * in_f * out_f;
-                };
-
-            vec4 param0 = { 0 };
-            vec4 param1 = { 0 };
-            vec4 param2 = { 0 };
-            vec4 param3 = { 0 };
-        };
 
         template<typename T, typename ... Tplus> void push(T item, Tplus ... rest) {
             push(item);
@@ -86,8 +93,8 @@ namespace ledstickler {
             push(rest ...);
         }
 
-        void push(const vec4 &t) {
-            timing = t;
+        void push(const timing &t) {
+            tim = t;
         }
     
         void push(const span &s) {
@@ -102,7 +109,7 @@ namespace ledstickler {
             blendFunc = f;
         }
 
-        vec4 timing;
+        timing tim;
         std::vector<timeline> timelines;
         std::vector<span> spans;
         std::function<vec4 (const vec4 &top, const vec4 &btm, double in_f, double out_f)> blendFunc =

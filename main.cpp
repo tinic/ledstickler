@@ -32,19 +32,19 @@ static constexpr gradient gradient_ramp((const vec4[2]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
-static vec4 nullCalc(const timeline::span &, const std::vector<const fixture *> &, const vec4&, double) {
+static vec4 nullCalc(const span &, const std::vector<const fixture *> &, const vec4&, double) {
     return vec4();
 }
 
 static timeline effect0({
-    timeline::span{ {  0.0,   10.0,   0.0,   0.0 }, nullCalc },
-    timeline::span{ { 10.0,   10.0,   0.0,   0.0 }, nullCalc },
-    timeline::span{ { 20.0,   10.0,   0.0,   0.0 }, nullCalc },
+    span{ timing {   0.0,   30.0 }, nullCalc },
+    span{ timing {   0.0,   30.0 }, nullCalc },
+    span{ timing {   0.0,   30.0 }, nullCalc },
 });
 
 static timeline master({
-    timeline{ vec4(   0.0,   30.0,   0.0,   0.0 ), effect0 },
-    timeline{ vec4(  30.0,   30.0,   0.0,   0.0 ), effect0 },
+    timeline { timing {   0.0,   32.0,   2.0,   2.0 }, effect0 },
+    timeline { timing {  30.0,   32.0,   2.0,   2.0 }, effect0 },
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {

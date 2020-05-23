@@ -50,26 +50,26 @@ void timeline::run(fixture &f) {
 vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point, vec4 btm) {
     vec4 res;
     for (auto& item : spans) {
-        if (time >=  item.timing.x &&
-            time <  (item.timing.x + item.timing.y) ) {
-            vec4 col = item.calcFunc(item, fixtures_stack, point, time - item.timing.x);
-            double stime = time - item.timing.x;
-            double in_f = stime != 0.0 ? std::clamp(1.0 - (item.timing.z / stime), 0.0, 1.0) : 0.0;
-            double etime = stime - (item.timing.y - item.timing.w);
-            double out_f = etime != 0.0 ? std::clamp(1.0 - (item.timing.w / etime), 0.0, 1.0) : 1.0;
+        if (time >=  item.tim.start &&
+            time <  (item.tim.start + item.tim.duration) ) {
+            vec4 col = item.calcFunc(item, fixtures_stack, point, time - item.tim.start);
+            double stime = time - item.tim.start;
+            double in_f = stime != 0.0 ? std::clamp(1.0 - (item.tim.lead_in / stime), 0.0, 1.0) : 0.0;
+            double etime = stime - (item.tim.duration - item.tim.lead_out);
+            double out_f = etime != 0.0 ? std::clamp(1.0 - (item.tim.lead_out / etime), 0.0, 1.0) : 1.0;
             res = item.blendFunc(item, col, res, in_f, out_f);
         }
     }
     for (auto& item : timelines) {
-        if (time >=  timing.x &&
-            time <  (timing.x + timing.y) ) {
-            res = item.calc(time - timing.x, fixtures_stack, point, res);
+        if (time >=  tim.start &&
+            time <  (tim.start + tim.duration) ) {
+            res = item.calc(time - tim.start, fixtures_stack, point, res);
         }
     }
-    double stime = time - timing.x;
-    double in_f = stime != 0.0 ? std::clamp(1.0 - (timing.z / stime), 0.0, 1.0) : 0.0;
-    double etime = stime - (timing.y - timing.w);
-    double out_f = etime != 0.0 ? std::clamp(1/.0 - (timing.w / etime), 0.0, 1.0) : 1.0;
+    double stime = time - tim.start;
+    double in_f = stime != 0.0 ? std::clamp(1.0 - (tim.lead_in / stime), 0.0, 1.0) : 0.0;
+    double etime = stime - (tim.duration - tim.lead_out);
+    double out_f = etime != 0.0 ? std::clamp(1/.0 - (tim.lead_out / etime), 0.0, 1.0) : 1.0;
     return blendFunc(res, btm, in_f, out_f);
 }
 
