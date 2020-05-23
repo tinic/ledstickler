@@ -24,7 +24,7 @@ template <typename T> static vec4 blend(const T &target, const timing &tim, doub
     return target.blendFunc(target, top, btm, in_f, out_f);
 }
 
-void timeline::run(fixture &f) {
+void timeline::run(fixture &f, uint64_t frame_time_us) {
     std::chrono::system_clock::time_point start_time = std::chrono::system_clock::now();
     std::chrono::system_clock::time_point frame_time = start_time;
 
@@ -46,7 +46,7 @@ void timeline::run(fixture &f) {
         printf(" active spans (%d)", int(span_count / point_count));
 
         std::this_thread::sleep_until(frame_time);
-        frame_time += std::chrono::milliseconds(100);
+        frame_time += std::chrono::microseconds(frame_time_us);
 
         f.walk_fixtures( [] (const std::vector<const fixture *> &fixtures_stack) {
             const auto &ft = *fixtures_stack[0];
@@ -99,4 +99,4 @@ vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_st
     return blend(*this, tim, time, res, btm);
 }
 
-};
+}

@@ -103,6 +103,6 @@ namespace ledstickler {
         std::vector<std::pair<vec4, vec4>> points;
     };
 
-};
+}
 
 #endif  // #ifndef _FIXTURE_H_

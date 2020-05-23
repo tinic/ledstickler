@@ -162,6 +162,6 @@ namespace ledstickler {
         return vec4(color_convert<uint8_t>().sRGB2CIELUV(color), stop);
     }
 
-};
+}
 
 #endif  // #ifndef _COLOR_H_

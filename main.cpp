@@ -14,7 +14,9 @@
 
 namespace ledstickler {
 
-static constexpr gradient gradient_rainbow((const vec4[7]){
+static uint64_t frame_time_us = 100'000;
+
+static constexpr gradient gradient_rainbow((const vec4[]){
     srgb8_stop({0xff,0x00,0x00}, 0.00),
     srgb8_stop({0xff,0xff,0x00}, 0.16),
     srgb8_stop({0x00,0xff,0x00}, 0.33),
@@ -23,12 +25,12 @@ static constexpr gradient gradient_rainbow((const vec4[7]){
     srgb8_stop({0xff,0x00,0xff}, 0.83),
     srgb8_stop({0xff,0x00,0x00}, 1.00)},7);
 
-static constexpr gradient gradient_sunset((const vec4[3]){
+static constexpr gradient gradient_sunset((const vec4[]){
     srgb8_stop({0xff,0x3f,0x3f}, 0.00),
     srgb8_stop({0x00,0xcf,0xff}, 0.50),
     srgb8_stop({0xff,0x3f,0x3f}, 1.00)},3);
 
-static constexpr gradient gradient_ramp((const vec4[2]){
+static constexpr gradient gradient_ramp((const vec4[]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
@@ -79,9 +81,9 @@ static fixture global_fixture(
     make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)*/
 );
 
-};  // namespace ledstickler {
+}  // namespace ledstickler {
 
 int main() {
-    ledstickler::master.run(ledstickler::global_fixture);
+    ledstickler::master.run(ledstickler::global_fixture, ledstickler::frame_time_us);
     return 0;
 }

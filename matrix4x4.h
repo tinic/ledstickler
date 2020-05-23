@@ -38,7 +38,7 @@ namespace ledstickler {
             1.0, 0.0, 0.0, 0.0, 
             0.0, 1.0, 0.0, 0.0, 
             0.0, 0.0, 1.0, 0.0, 
-            0.0, 0.0, 0.0, 1.0 };
+            0.0, 0.0, 0.0, 1.0};
 
         matrix4x4 &operator=(const matrix4x4& other) = default;
         
@@ -174,7 +174,7 @@ namespace ledstickler {
         
         
     };
-};
+}
 
 
 #endif  // #ifndef _MATRIX4_H_

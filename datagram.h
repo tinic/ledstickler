@@ -36,6 +36,6 @@ namespace ledstickler {
         bool init = false;
     };
 
-};
+}
 
 #endif  // #ifndef _DATAGRAM_H_

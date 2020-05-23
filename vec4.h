@@ -32,7 +32,7 @@ namespace ledstickler {
 
     static constexpr inline double fabs_const(const double x) {
         return x < 0 ? -x : +x;        
-    };
+    }
 
     struct vec4 {
         double x = 0.0;

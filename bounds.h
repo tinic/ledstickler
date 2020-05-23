@@ -52,6 +52,6 @@ namespace ledstickler {
                ( fabs_const( zmax - zmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.z - zmin ) / ( zmax - zmin ) ) : 0.0);
         }
     };
-};
+}
 
 #endif  // #ifndef _BOUNDS_H_

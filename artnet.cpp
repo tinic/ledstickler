@@ -57,4 +57,4 @@ std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output
     return packets;
 }
 
-};
+}

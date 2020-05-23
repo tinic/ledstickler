@@ -18,6 +18,6 @@ namespace ledstickler {
     template <typename T, std::size_t... ns>
     using multi_array = typename multi_array_<T, ns...>::type;
 
-};
+}
 
 #endif  // #ifndef _ARRAY_H_

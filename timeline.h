@@ -80,7 +80,7 @@ namespace ledstickler {
 
     class timeline {
     public:
-        void run(fixture &fixture);
+        void run(fixture &fixture, uint64_t frame_time_us);
 
         vec4 calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point, vec4 btm); 
 
@@ -118,6 +118,6 @@ namespace ledstickler {
             };
     };
 
-};
+}
 
 #endif /* TIMELINE_H_ */
