@@ -17,9 +17,9 @@ namespace ledstickler {
         
         uint32_t addr() const {
             return  (uint32_t(a0)<<24)|
-                    (uint32_t(a0)<<16)|
-                    (uint32_t(a0)<< 8)|
-                    (uint32_t(a0)<< 0);
+                    (uint32_t(a1)<<16)|
+                    (uint32_t(a2)<< 8)|
+                    (uint32_t(a3)<< 0);
         }
     };
     
