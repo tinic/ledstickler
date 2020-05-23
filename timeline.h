@@ -56,8 +56,8 @@ namespace ledstickler {
     };
 
     struct timing {
-        double start = 0.0;
-        double duration = 0.0;
+        double start;
+        double duration;
         double lead_in = 0.0;
         double lead_out = 0.0;
     };
