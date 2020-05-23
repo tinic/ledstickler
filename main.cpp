@@ -47,14 +47,14 @@ static timeline effect0({
 });
 
 static timeline master({
-    timing { 0.0, 30.0 },
-    timeline { timing {    0.0,   12.0, 2.0, 2.0 }, effect0 },
-    timeline { timing {   10.0,   22.0, 2.0, 2.0 }, effect0 }
+    timing { 0.0, 30.0, 2.0, 2.0 },
+    timeline { timing {    0.0,   10.0, 0.0, 2.0 }, effect0 },
+    timeline { timing {   10.0,   10.0, 2.0, 2.0 }, effect0 }
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
     fixture fixture{ip, name, universe0, universe1};
-    for (size_t c = 0; c < 1; c++) {
+    for (size_t c = 0; c < 100; c++) {
         fixture.push(pos);
         pos += vec4(0.0, 0.0, -15.0, 0.0);
     }

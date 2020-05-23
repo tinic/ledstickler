@@ -38,7 +38,6 @@ std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output
         size_t offset = 18;
         for (auto item : chunk) {
             const rgba<uint16_t> col(convert.CIELUV2sRGB(item.first));
-            printf("%04x %04x %04x\n", col.r, col.g, col.b);
             packet.at(offset + 0) = ( col.r >> 8 ) & 0xFF; 
             packet.at(offset + 1) = ( col.r >> 0 ) & 0xFF; 
             packet.at(offset + 2) = ( col.g >> 8 ) & 0xFF; 

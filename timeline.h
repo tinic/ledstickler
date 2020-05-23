@@ -105,7 +105,6 @@ namespace ledstickler {
         }
 
         void push(const timeline &t) {
-            printf("%f\n", t.tim.start);
             timelines.push_back(t);
         }
 
