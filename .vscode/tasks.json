@@ -9,7 +9,7 @@
         {
             "label": "cmake",
             "type": "shell",
-            "command": "cmake -G Ninja ..",
+            "command": "cmake -G Ninja -DWIN32=1 ..",
             "problemMatcher": []
         },
         {
