@@ -138,7 +138,9 @@ namespace ledstickler {
             double g = -0.9692660 * x +  1.8760108 * y +  0.0415560 * z;
             double b =  0.0556434 * x + -0.2040259 * y +  1.0572252 * z;
 
+#if 0
             auto sRGBTransfer = [] (double a) {
+                return a;
                 if (a <= 0.0) {
                     return 0.0;
                 } else if (a < 0.0031308) {
@@ -151,6 +153,9 @@ namespace ledstickler {
             };
 
             return vec4(sRGBTransfer(r),sRGBTransfer(g),sRGBTransfer(b), in.w);
+#else  // #if 0
+            return vec4(r,g,b,in.w).clamp();
+#endif  // #if 0
         }
 
     private:

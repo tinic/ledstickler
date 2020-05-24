@@ -5,8 +5,8 @@ namespace ledstickler {
 
 static constexpr color_convert<uint8_t> convert;
 
-std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output_packets(const fixture &f) {
-    std::vector<std::array<uint8_t, artnet_output_packet_size>> packets;
+std::vector<std::vector<uint8_t>> create_artnet_output_packets(const fixture &f) {
+    std::vector<std::vector<uint8_t>> packets;
 
     // https://art-net.org.uk/structure/streaming-packets/artdmx-packet-definition/
 	
@@ -20,30 +20,37 @@ std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output
         size_t chunk_len = std::min(artnet_dmx_len / (3 * 2), len);
         std::vector<std::pair<vec4, vec4>> chunk(iter, iter + chunk_len);
         
-        std::array<uint8_t, artnet_output_packet_size> packet = { 0 };
-        
-        packet.at( 8) = uint8_t( (artnet_output_packet_id >> 0) & 0xFF );
-        packet.at( 9) = uint8_t( (artnet_output_packet_id >> 8) & 0xFF );
-        packet.at(10) = uint8_t( ( artnet_output_packet_version >> 8 ) & 0xFF );
-        packet.at(11) = uint8_t( ( artnet_output_packet_version >> 0 ) & 0xFF );
-        packet.at(12) = 0; // seq 
-        packet.at(13) = 0; // phy 
-        packet.at(14) = uint8_t( ( f.universes[uni_index] >> 0 ) & 0xFF );
-        packet.at(15) = uint8_t( ( f.universes[uni_index] >> 8 ) & 0xFF );
-        packet.at(16) = uint8_t( ( artnet_output_packet_size >> 8 ) & 0xFF );
-        packet.at(17) = uint8_t( ( artnet_output_packet_size >> 0 ) & 0xFF );
+        std::vector<uint8_t> packet;
 
-        memcpy(packet.data(), "Art-Net", 8);
+        packet.push_back('A');
+        packet.push_back('r');
+        packet.push_back('t');
+        packet.push_back('-');
+        packet.push_back('N');
+        packet.push_back('e');
+        packet.push_back('t');
+        packet.push_back(0);
+
+        packet.push_back(uint8_t( (artnet_output_packet_id >> 0) & 0xFF ));
+        packet.push_back(uint8_t( (artnet_output_packet_id >> 8) & 0xFF ));
+        packet.push_back(uint8_t( (artnet_output_packet_version >> 8 ) & 0xFF ));
+        packet.push_back(uint8_t( (artnet_output_packet_version >> 0 ) & 0xFF ));
+        packet.push_back(0); // seq 
+        packet.push_back(0); // phy 
+        packet.push_back(uint8_t( (f.universes[uni_index] >> 0 ) & 0xFF ));
+        packet.push_back(uint8_t( (f.universes[uni_index] >> 8 ) & 0xFF ));
+        packet.push_back(uint8_t( ( (chunk_len * 6 ) >> 8) & 0xFF ));
+        packet.push_back(uint8_t( ( (chunk_len * 6 ) >> 0) & 0xFF ));
 
         size_t offset = 18;
         for (auto item : chunk) {
             const rgba<uint16_t> col(convert.CIELUV2sRGB(item.first));
-            packet.at(offset + 0) = uint8_t( ( col.r >> 8 ) & 0xFF ); 
-            packet.at(offset + 1) = uint8_t( ( col.r >> 0 ) & 0xFF ); 
-            packet.at(offset + 2) = uint8_t( ( col.g >> 8 ) & 0xFF ); 
-            packet.at(offset + 3) = uint8_t( ( col.g >> 0 ) & 0xFF ); 
-            packet.at(offset + 4) = uint8_t( ( col.b >> 8 ) & 0xFF ); 
-            packet.at(offset + 5) = uint8_t( ( col.b >> 0 ) & 0xFF ); 
+            packet.push_back(uint8_t( ( col.r >> 8 ) & 0xFF )); 
+            packet.push_back(uint8_t( ( col.r >> 0 ) & 0xFF )); 
+            packet.push_back(uint8_t( ( col.g >> 8 ) & 0xFF )); 
+            packet.push_back(uint8_t( ( col.g >> 0 ) & 0xFF )); 
+            packet.push_back(uint8_t( ( col.b >> 8 ) & 0xFF )); 
+            packet.push_back(uint8_t( ( col.b >> 0 ) & 0xFF )); 
             offset += 6;
         }
         

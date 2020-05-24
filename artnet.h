@@ -6,17 +6,16 @@
 namespace ledstickler {
 
     constexpr uint16_t artnet_port = 6454;
-    constexpr size_t artnet_output_packet_size = 512 + 18;
     constexpr size_t artnet_sync_packet_size = 14;
 
-    std::vector<std::array<uint8_t, artnet_output_packet_size>> create_artnet_output_packets(const fixture &f);
+    std::vector<std::vector<uint8_t>> create_artnet_output_packets(const fixture &f);
 
     constexpr std::array<uint8_t, artnet_sync_packet_size> make_arnet_sync_packet() {
         std::array<uint8_t, artnet_sync_packet_size> packet = { 0 };
 
         // https://art-net.org.uk/structure/streaming-packets/artsync-packet-definition/
     
-        constexpr uint16_t artnet_output_packet_id = 0x5000;
+        constexpr uint16_t artnet_output_packet_id = 0x5200;
         constexpr uint16_t artnet_output_packet_version = 14;
         
         // packet.insert(packet.begin(), std::to_array("Art-Net"));

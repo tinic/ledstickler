@@ -14,7 +14,7 @@
 
 namespace ledstickler {
 
-static uint64_t frame_time_us = 100'000;
+static uint64_t frame_time_us = 10'000;
 
 static constexpr gradient gradient_rainbow((const vec4[]){
     srgb8_stop({0xff,0x00,0x00}, 0.00),
@@ -38,7 +38,7 @@ static vec4 basicRamp(const span &, const std::vector<const fixture *> &fixtures
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
-    return gradient_ramp.reflect((fixtures.front()->bounds.map_unit(pos) + (time * 0.25)).z);
+    return gradient_ramp.reflect((fixtures.front()->bounds.map_unit(pos) * 8.0 + (time * 0.25)).z);
 }
 
 static vec4 nullCalc(const span &, const std::vector<const fixture *> &, const vec4&, double) {
@@ -67,7 +67,7 @@ static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, ve
 }
 
 static fixture global_fixture(
-    make_vertical_fixture("A00", {192, 168, 1, 60}, {   0.0,    0.0, 2000.0}, 0, 1)/*,
+    make_vertical_fixture("A00", {192, 168, 1,103}, {   0.0,    0.0, 2000.0}, 0, 1)/*,
     make_vertical_fixture("A01", {192, 168, 1, 61}, {1000.0,    0.0, 2000.0}, 0, 1),
     make_vertical_fixture("A02", {192, 168, 1, 62}, {2000.0,    0.0, 2000.0}, 0, 1),
 
