@@ -1,7 +1,10 @@
 #ifndef _DATAGRAM_H_
 #define _DATAGRAM_H_
 
+#define WIN32
+
 #ifdef WIN32
+#include <stdint.h>
 #include <winsock2.h>
 #else
 #include <sys/types.h>

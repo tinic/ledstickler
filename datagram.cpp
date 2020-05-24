@@ -3,7 +3,7 @@
 namespace ledstickler {
 
 #ifdef WIN32
-WSAData datagram_socket::wsaData = { 0 };
+WSAData datagram_socket::wsaData;
 bool datagram_socket::s_init = false;
 #endif  // #ifdef WIN32
 
@@ -15,6 +15,7 @@ datagram_socket::datagram_socket(uint16_t p, bool broadcast, bool reusesock) {
 #ifdef WIN32
     if (!s_init) {
         s_init = true;
+        memset(&wsaData, 0, sizeof(WSAData));
         (void)::WSAStartup(MAKEWORD(2,2),&wsaData);
     }
 #endif  // #ifdef WIN32
@@ -71,7 +72,7 @@ ssize_t datagram_socket::sendTo(uint32_t address, const uint8_t *data, size_t le
     outaddr.sin_family = AF_INET;
     outaddr.sin_addr.s_addr = htonl(address);
     outaddr.sin_port = htons(port);
-    return ::sendto(sock, data, len, 0, (struct sockaddr *)&outaddr,sizeof(outaddr));
+    return ::sendto(sock, reinterpret_cast<const char *>(data), static_cast<int>(len), 0, (struct sockaddr *)&outaddr,sizeof(outaddr));
 }
 
 };
