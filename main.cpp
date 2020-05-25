@@ -26,9 +26,15 @@ static constexpr gradient gradient_rainbow((const vec4[]){
     srgb8_stop({0xff,0x00,0x00}, 1.00)},7);
 
 static constexpr gradient gradient_sunset((const vec4[]){
-    srgb8_stop({0xff,0x3f,0x3f}, 0.00),
-    srgb8_stop({0x00,0xcf,0xff}, 0.50),
-    srgb8_stop({0xff,0x3f,0x3f}, 1.00)},3);
+    srgb8_stop({0x00,0x00,0x00}, 0.00),
+    srgb8_stop({0xff,0x20,0x10}, 0.02),
+    srgb8_stop({0x00,0x20,0x10}, 0.04),
+    srgb8_stop({0x00,0x00,0x00}, 0.33),
+    srgb8_stop({0x00,0x00,0x00}, 0.90),
+//    srgb8_stop({0x40,0xcf,0x8f}, 0.16),
+//    srgb8_stop({0x00,0xcf,0x00}, 0.33),
+//    srgb8_stop({0x00,0x00,0x00}, 0.90),
+    srgb8_stop({0x00,0x00,0x00}, 1.00)},6);
 
 static constexpr gradient gradient_ramp((const vec4[]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
@@ -38,23 +44,26 @@ static vec4 basicRamp(const span &, const std::vector<const fixture *> &fixtures
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
-    return gradient_ramp.reflect((fixtures.front()->bounds.map_unit(pos) * 8.0 + (time * 0.25)).z);
+    return gradient_sunset.repeat((fixtures.front()->bounds.map_unit(pos) - time * 0.0444).z);
 }
+
+static vec4 crossFade(const timeline &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
+    return top * in_f * out_f + btm * (1.0 - ( in_f * out_f) );
+};
 
 static vec4 nullCalc(const span &, const std::vector<const fixture *> &, const vec4&, double) {
     return vec4();
 }
 
 static timeline effect0({
-    timing { 0.0, 30.0 },
-    span{ timing {    0.0,   30.0 }, basicRamp },
-    span{ timing {    0.0,   30.0 }, nullCalc }
+    timing { 0.0, 600.0 },
+    span{ timing {    0.0,   600.0 }, basicRamp },
+    span{ timing {    0.0,   600.0 }, nullCalc }
 });
 
 static timeline master({
-    timing { 0.0, 30.0, 2.0, 2.0 },
-    timeline { timing {    0.0,   10.0, 0.0, 2.0 }, effect0 },
-    timeline { timing {   10.0,   10.0, 2.0, 2.0 }, effect0 }
+    timing { 0.0, 600.0 },
+    timeline { timing {    0.0,  600.0, 0.0, 0.0 }, effect0, std::function(crossFade) },
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {

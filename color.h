@@ -109,53 +109,39 @@ namespace ledstickler {
             double Y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
             double Z = 0.0193339 * r + 0.1191920 * g + 0.9503041 * b;
 
-            const double wu = 0.197839825;
-            const double wv = 0.468336303;
+            constexpr double wu = 0.197839825;
+            constexpr double wv = 0.468336303;
 
-            double l = ( Y <= 0.008856452 ) ? ( 9.03296296296 * Y) : ( 1.16 * std::pow(Y, 1.0 / 3.0) - 0.16);
+            constexpr double C0 = ( 6.0 / 29.0 ) * ( 6.0 / 29.0 ) * ( 6.0 / 29.0 );
+            constexpr double C1 = ( 29.0 / 3.0 ) * ( 29.0 / 3.0 ) * ( 29.0 / 3.0 ) / 100.0;
+            double l = ( Y <= C0 ) ? ( C1 * Y ) : ( 1.16 * std::pow(Y, 1.0 / 3.0) - 0.16);
             double d = X + 15.0 * Y + 3.0 * Z;
             double di = d != 0.0 ? ( 1.0 / d ) : 0.0;
 
             return vec4(l,
-                (d > (1.0 / 65536.0)) ? 13.0 * l * ( ( 4.0 * X * di ) - wu ) : 0.0,
-                (d > (1.0 / 65536.0)) ? 13.0 * l * ( ( 9.0 * Y * di ) - wv ) : 0.0);
+                13.0 * l * ( ( 4.0 * X * di ) - wu ),
+                13.0 * l * ( ( 9.0 * Y * di ) - wv ));
         }
 
         constexpr vec4 CIELUV2sRGB(const vec4 &in) const {
-            const double wu = 0.197839825;
-            const double wv = 0.468336303;
+            constexpr double wu = 0.197839825;
+            constexpr double wv = 0.468336303;
 
             double up_13l = in.y + wu * (13.0 * in.x);
             double vp_13l = in.z + wv * (13.0 * in.x);
-            double vp_13li = 1.0 / vp_13l;
+            double vp_13li = vp_13l != 0.0 ? ( 1.0 / vp_13l ) : 0.0;
     
-            double Y = ( in.x + 0.16 ) * (1.0 / 1.16);
-            double y = ( in.x <= 0.08 ) ? ( in.x * 0.1107056 ) : ( Y * Y * Y );
-            double x = (vp_13l > (1.0 / 65536.0)) ? ( 2.25 * y * up_13l * vp_13li ) : 0.0;
-            double z = (vp_13l > (1.0 / 65536.0)) ? ( y * ( 156.0 * in.x - 3.0 * up_13l - 20.0 * vp_13l ) * (1.0 / 4.0) * vp_13li ) : 0.0;
+            double Y = ( in.x + 0.16 ) * ( 1.0 / 1.16 );
+            constexpr double C = ( 3.0 / 29.0 ) * ( 3.0 / 29.0 ) * ( 3.0 / 29.0 ) * 100.0;
+            double y = ( in.x <= 0.08 ) ? ( in.x * C ) : ( Y * Y * Y );
+            double x = ( 2.25 * y * up_13l * vp_13li );
+            double z = ( y * ( 156.0 * in.x - 3.0 * up_13l - 20.0 * vp_13l ) * (1.0 / 4.0) * vp_13li );
 
             double r =  3.2404542 * x + -1.5371385 * y + -0.4985314 * z;
             double g = -0.9692660 * x +  1.8760108 * y +  0.0415560 * z;
             double b =  0.0556434 * x + -0.2040259 * y +  1.0572252 * z;
 
-#if 0
-            auto sRGBTransfer = [] (double a) {
-                return a;
-                if (a <= 0.0) {
-                    return 0.0;
-                } else if (a < 0.0031308) {
-                    return a * 12.92;
-                } else if ( a < 0.999982 ) {
-                    return std::pow(a, 1.0 / 2.4) * 1.055 - 0.055;
-                } else {
-                    return 1.0;
-                }
-            };
-
-            return vec4(sRGBTransfer(r),sRGBTransfer(g),sRGBTransfer(b), in.w);
-#else  // #if 0
             return vec4(r,g,b,in.w).clamp();
-#endif  // #if 0
         }
 
     private:
