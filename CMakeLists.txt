@@ -5,5 +5,6 @@ target_sources (ledstickler PRIVATE main.cpp artnet.cpp datagram.cpp timeline.cp
 target_compile_options (ledstickler PRIVATE -static-libgcc -flto -Wall -Wextra -Wdouble-promotion -Wconversion -Wuseless-cast -Wlogical-op -Wshadow -Wfloat-conversion -Wnull-dereference -g -O3 -std=c++2a)
 if(MINGW)
     target_link_libraries(ledstickler ws2_32)
+    target_link_options (ledstickler PRIVATE -static)
 endif(MINGW)
-target_link_options (ledstickler PRIVATE -static -static-libgcc -flto)
+target_link_options (ledstickler PRIVATE -static-libgcc -flto)
