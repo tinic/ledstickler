@@ -6,5 +6,6 @@ target_compile_options (ledstickler PRIVATE -static-libgcc -flto -Wall -Wextra -
 if(MINGW)
     target_link_libraries(ledstickler ws2_32)
     target_link_options (ledstickler PRIVATE -static)
+    target_compile_definitions(ledstickler PRIVATE WIN32)
 endif(MINGW)
 target_link_options (ledstickler PRIVATE -static-libgcc -flto)
