@@ -8,7 +8,7 @@
 
 namespace ledstickler {
 
-    double ffrac(double v) { v - std::floor(v); }
+    double ffrac(double v) { return v - std::floor(v); }
 
     template<size_t colors_2n = 8> class gradient {
     public:
