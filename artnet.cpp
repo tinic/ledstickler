@@ -44,7 +44,7 @@ std::vector<std::vector<uint8_t>> create_artnet_output_packets(const fixture &f)
 
         size_t offset = 18;
         for (auto item : chunk) {
-            const rgba<uint16_t> col(convert.CIELUV2sRGB(item.first));
+            const rgba<uint16_t> col(convert.CIELUV2LED(item.first));
             packet.push_back(uint8_t( ( col.r >> 8 ) & 0xFF )); 
             packet.push_back(uint8_t( ( col.r >> 0 ) & 0xFF )); 
             packet.push_back(uint8_t( ( col.g >> 8 ) & 0xFF )); 

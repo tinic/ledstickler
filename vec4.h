@@ -448,9 +448,9 @@ namespace ledstickler {
         constexpr double reflect(double i) {
             i = fabs_const(i);
             if ((static_cast<int32_t>(i) & 1) == 0) {
-                i = std::fmod(i, 1.0);
+                i -= std::floor(i);
             } else {
-                i = std::fmod(i, 1.0);
+                i -= std::floor(i);
                 i = 1.0 - i;
             }
             return i;

@@ -74,7 +74,7 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
         });
 
         static constexpr color_convert<uint8_t> convert;
-        const rgba<uint16_t> col(convert.CIELUV2sRGB(color_sum / double(point_count)));
+        const rgba<uint16_t> col(convert.CIELUV2LED(color_sum / double(point_count)));
         printf(" average color (r:%04x g:%04x b:%04x)", col.r, col.g, col.b);
         
         if (time > tim.duration) {

@@ -8,6 +8,8 @@
 
 namespace ledstickler {
 
+    double ffrac(double v) { v - std::floor(v); }
+
     template<size_t colors_2n = 8> class gradient {
     public:
         constexpr gradient(const vec4 stops[], const size_t n) {
@@ -31,22 +33,22 @@ namespace ledstickler {
         }
 
         constexpr vec4 repeat(double i) const {
-            i = std::fmod(i, 1.0);
+            i = ffrac(i);
             i *= colors_mul;
-            return vec4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], std::fmod(i, 1.0));
+            return vec4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], ffrac(i));
         }
 
         constexpr vec4 reflect(double i) const {
             i = std::fabs(i);
             if ((static_cast<int32_t>(i) & 1) == 0) {
-                i = std::fmod(i, 1.0);
+                i = ffrac(i);
             } else {
-                i = std::fmod(i, 1.0);
+                i = ffrac(i);
                 i = 1.0 - i;
             }
             i *= colors_mul;
             
-            return vec4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], std::fmod(i, 1.0));
+            return vec4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], ffrac(i));
         }
         
         constexpr vec4 clamp(double i) const {
@@ -57,7 +59,7 @@ namespace ledstickler {
                 return colors[colors_n-1];
             }
             i *= colors_mul;
-            return vec4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], std::fmod(i, 1.0));
+            return vec4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], ffrac(i));
         }
 
     private:

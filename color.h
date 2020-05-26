@@ -123,7 +123,7 @@ namespace ledstickler {
                 13.0 * l * ( ( 9.0 * Y * di ) - wv ));
         }
 
-        constexpr vec4 CIELUV2sRGB(const vec4 &in) const {
+        constexpr vec4 CIELUV2LED(const vec4 &in) const {
             constexpr double wu = 0.197839825;
             constexpr double wv = 0.468336303;
 
