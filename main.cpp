@@ -38,28 +38,31 @@ static constexpr gradient gradient_engine((const vec4[]){
     srgb8_stop({0x00,0x00,0x00}, 1.00)},10);
 
 static constexpr gradient gradient_ramp((const vec4[]){
-    srgb8_stop({0xff,0xff,0xff}, 0.00),
-    srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
+    srgb8_stop({0x80,0xff,0x80}, 0.00),
+    srgb8_stop({0x80,0x00,0x00}, 1.00)},2);
 
-static vec4 basicRamp(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
+static vec4 engineBlastoff(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
     return gradient_engine.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.75 - time * 0.2000)).z);
 }
 
+static vec4 background(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
+    if (fixtures.size() == 0 || fixtures.front() == nullptr) {
+        return vec4();
+    }
+    return gradient_ramp.clamp((fixtures.front()->bounds.map_unit(pos)).z) * 0.011111;
+}
+
 static vec4 crossFade(const timeline &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
     return top * in_f * out_f + btm * (1.0 - ( in_f * out_f) );
 };
 
-static vec4 nullCalc(const span &, const std::vector<const fixture *> &, const vec4&, double) {
-    return vec4();
-}
-
 static timeline effect0({
     timing { 0.0, 600.0 },
-    span{ timing {    0.0,   600.0 }, basicRamp },
-    span{ timing {    0.0,   600.0 }, nullCalc }
+    span{ timing {    0.0,   600.0 }, background },
+    span{ timing {    0.0,   600.0 }, engineBlastoff }
 });
 
 static timeline master({
