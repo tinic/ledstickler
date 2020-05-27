@@ -25,16 +25,17 @@ static constexpr gradient gradient_rainbow((const vec4[]){
     srgb8_stop({0xff,0x00,0xff}, 0.83),
     srgb8_stop({0xff,0x00,0x00}, 1.00)},7);
 
-static constexpr gradient gradient_sunset((const vec4[]){
+static constexpr gradient gradient_engine((const vec4[]){
     srgb8_stop({0x00,0x00,0x00}, 0.00),
-    srgb8_stop({0xff,0x00,0x00}, 0.02),
-    srgb8_stop({0x00,0x18,0x00}, 0.04),
-    srgb8_stop({0x00,0x00,0x00}, 0.33),
-    srgb8_stop({0x00,0x00,0x00}, 0.90),
-//    srgb8_stop({0x40,0xcf,0x8f}, 0.16),
-//    srgb8_stop({0x00,0xcf,0x00}, 0.33),
-//    srgb8_stop({0x00,0x00,0x00}, 0.90),
-    srgb8_stop({0x00,0x00,0x00}, 1.00)},6);
+    srgb8_stop({0xff,0x00,0x00}, 0.01),
+    srgb8_stop({0xff,0xff,0x00}, 0.015),
+    srgb8_stop({0xff,0xff,0xff}, 0.02),
+    srgb8_stop({0xff,0xff,0x00}, 0.025),
+    srgb8_stop({0xff,0x00,0x00}, 0.03),
+    srgb8_stop({0x10,0x00,0x80}, 0.04),
+    srgb8_stop({0x10,0x00,0x20}, 0.06),
+    srgb8_stop({0x00,0x00,0x00}, 0.50),
+    srgb8_stop({0x00,0x00,0x00}, 1.00)},10);
 
 static constexpr gradient gradient_ramp((const vec4[]){
     srgb8_stop({0xff,0xff,0xff}, 0.00),
@@ -44,7 +45,7 @@ static vec4 basicRamp(const span &, const std::vector<const fixture *> &fixtures
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
-    return gradient_sunset.repeat((fixtures.front()->bounds.map_unit(pos) - time * 0.0444).z);
+    return gradient_engine.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.75 - time * 0.2000)).z);
 }
 
 static vec4 crossFade(const timeline &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
