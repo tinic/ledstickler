@@ -22,13 +22,8 @@ std::vector<std::vector<uint8_t>> create_artnet_output_packets(const fixture &f)
         
         std::vector<uint8_t> packet;
 
-        packet.push_back('A');
-        packet.push_back('r');
-        packet.push_back('t');
-        packet.push_back('-');
-        packet.push_back('N');
-        packet.push_back('e');
-        packet.push_back('t');
+        const std::string artnet("Art-Net");
+        std::copy(artnet.begin(), artnet.end(), std::back_inserter(packet));
         packet.push_back(0);
 
         packet.push_back(uint8_t( (artnet_output_packet_id >> 0) & 0xFF ));

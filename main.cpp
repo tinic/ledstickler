@@ -48,7 +48,7 @@ static vec4 engineBlastoff(const span &, const std::vector<const fixture *> &fix
     return gradient_engine.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.75 - time * 0.2000)).z);
 }
 
-static vec4 background(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
+static vec4 background(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double) {
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
