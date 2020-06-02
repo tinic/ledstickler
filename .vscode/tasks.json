@@ -1,24 +1,62 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
-    "options": {
-        "cwd": "${workspaceRoot}/build"
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
     },
     "tasks": [
         {
             "label": "cmake",
             "type": "shell",
-            "command": "cmake -G Ninja -DWIN32=1 ..",
-            "problemMatcher": []
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "cmake",
+            "args": [
+                "-G",
+                "Ninja",
+                "${workspaceFolder}"
+            ]
         },
         {
-            "label": "make",
+            "label": "ninja",
             "type": "shell",
             "command": "ninja",
+            "args": [
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "dependsOn": [
+                "cmake"
+            ],
             "problemMatcher": [
                 "$gcc"
-            ]
-        }
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "ninja clean",
+            "type": "shell",
+            "command": "ninja",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "dependsOn": [
+                "cmake"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
     ]
 }
