@@ -37,22 +37,40 @@ static constexpr gradient gradient_engine((const vec4[]){
     srgb8_stop({0x00,0x00,0x00}, 0.50),
     srgb8_stop({0x00,0x00,0x00}, 1.00)},10);
 
-static constexpr gradient gradient_ramp((const vec4[]){
+static constexpr gradient gradient_engine_bg((const vec4[]){
     srgb8_stop({0x80,0xff,0x80}, 0.00),
     srgb8_stop({0x80,0x00,0x00}, 1.00)},2);
+
+static constexpr gradient gradient_ramp((const vec4[]){
+    srgb8_stop({0xff,0xff,0xff}, 0.00),
+    srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
 
 static vec4 engineBlastoff(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
-    return gradient_engine.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.75 - time * 0.2000)).z);
+    return gradient_engine.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.075 - time * 0.2000)).z);
+}
+
+static vec4 justARainbow(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
+    if (fixtures.size() == 0 || fixtures.front() == nullptr) {
+        return vec4();
+    }
+    return gradient_rainbow.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.75 - time * 0.2000)).z);
+}
+
+static vec4 justAGradient(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
+    if (fixtures.size() == 0 || fixtures.front() == nullptr) {
+        return vec4();
+    }
+    return gradient_ramp.reflect(-((fixtures.front()->bounds.map_unit(pos) * 4.0 + time * 0.2000)).z);
 }
 
 static vec4 background(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
-    return gradient_ramp.clamp((fixtures.front()->bounds.map_unit(pos)).z) * 0.011111;
+    return gradient_engine_bg.clamp((fixtures.front()->bounds.map_unit(pos)).z) * 0.011111;
 }
 
 static vec4 crossFade(const timeline &, const vec4 &top, const vec4 &btm, double in_f, double out_f) {
@@ -65,9 +83,16 @@ static timeline effect0({
     span{ timing {    0.0,   600.0 }, engineBlastoff }
 });
 
-static timeline master({
+static timeline effect1({
     timing { 0.0, 600.0 },
-    timeline { timing {    0.0,  600.0, 0.0, 0.0 }, effect0, std::function(crossFade) },
+    span{ timing {    0.0,   600.0 }, justARainbow },
+    span{ timing {    0.0,   600.0 }, justAGradient }
+});
+
+static timeline master({
+    timing { 0.0, 120.0 },
+    timeline { timing {    0.0,  62.0, 2.0, 2.0 }, effect1, std::function(crossFade) },
+    timeline { timing {   60.0,  62.0, 2.0, 2.0 }, effect0, std::function(crossFade) },
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
