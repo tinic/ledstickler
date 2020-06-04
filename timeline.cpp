@@ -4,6 +4,7 @@
 #include <thread>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 #include "./timeline.h"
 #include "./artnet.h"
@@ -22,6 +23,45 @@ template <typename T> static vec4 blend(const T &target, double time, const vec4
     double etime = time - (target.tim.duration - target.tim.lead_out);
     double out_f = target.tim.lead_out > 0 ? ( etime != 0.0 ? std::clamp(1.0 - (etime / target.tim.lead_out) , 0.0, 1.0) : 1.0) : 1.0;
     return target.blendFunc(target, top, btm, in_f, out_f);
+}
+
+std::string timeline::json(fixture &f) const {
+    std::stringstream ss;
+
+    ss << "{\n";
+    ss << "\t\"bounds\" : {\n";
+    ss << "\t\t\"xmin\" : " << f.bounds.norm_uniform().xmin << ",\n";
+    ss << "\t\t\"xmax\" : " << f.bounds.norm_uniform().xmax << ",\n";
+    ss << "\t\t\"ymin\" : " << f.bounds.norm_uniform().ymin << ",\n";
+    ss << "\t\t\"ymax\" : " << f.bounds.norm_uniform().ymax << ",\n";
+    ss << "\t\t\"zmin\" : " << f.bounds.norm_uniform().zmin << ",\n";
+    ss << "\t\t\"zmax\" : " << f.bounds.norm_uniform().zmax << "\n";
+    ss << "\t},\n";
+
+    ss << "\t\"points\" : [\n";
+    f.walk_fixtures( [&ss,&f] (const std::vector<const fixture *> &fixtures_stack) {
+        const auto &ft = *fixtures_stack.front();
+        if (!ft.name.size()) {
+            return;
+        }
+        std::for_each(ft.points.begin(), ft.points.end(), [&ss,&f] (auto item) { 
+            static constexpr color_convert<uint8_t> convert;
+            const rgba<uint16_t> col(convert.CIELUV2LED(item.first));
+            ss << "\t\t{";
+            ss << "\"x\":" << f.bounds.map_norm_uniform(item.second).x << ",";
+            ss << "\"y\":" << f.bounds.map_norm_uniform(item.second).y << ",";
+            ss << "\"z\":" << f.bounds.map_norm_uniform(item.second).z << ",";
+            ss << "\"r\":" << col.r << ",";
+            ss << "\"g\":" << col.g << ",";
+            ss << "\"b\":" << col.b;
+            ss << "},\n";
+        });
+    });
+    ss.seekp(-2, std::ios_base::end);
+    ss << "\n\t]\n";
+    ss << "}\n";
+
+    return ss.str();
 }
 
 void timeline::run(fixture &f, uint64_t frame_time_us) {
@@ -76,6 +116,9 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
         static constexpr color_convert<uint8_t> convert;
         const rgba<uint16_t> col(convert.CIELUV2LED(color_sum / double(point_count)));
         printf(" average color (r:%04x g:%04x b:%04x)", col.r, col.g, col.b);
+        
+        std::string j(json(f));
+        socket.sendTo(0x7F000001, reinterpret_cast<const uint8_t *>(j.c_str()), j.size());
         
         if (time > tim.duration) {
             start_time = frame_time;

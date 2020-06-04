@@ -32,24 +32,47 @@ namespace ledstickler {
         }
         
         constexpr vec4 extent() const {
+            if (xmin > xmax ||
+                ymin > ymax ||
+                zmin > zmax) {
+                return vec4();
+            }
             return vec4(
-                fabs_const( xmax - xmin ),
-                fabs_const( ymax - ymin ),
-                fabs_const( zmax - zmin ));
+                xmax - xmin,
+                ymax - ymin,
+                zmax - zmin);
         }        
-        
+
+        constexpr bounds6 norm_uniform() const {
+            bounds6 nu;
+            nu.xmin = (- extent().x * 0.5 ) / extent().max();
+            nu.xmax = (+ extent().x * 0.5 ) / extent().max();
+            nu.ymin = (- extent().y * 0.5 ) / extent().max();
+            nu.ymax = (+ extent().y * 0.5 ) / extent().max();
+            nu.zmin = (- extent().z * 0.5 ) / extent().max();
+            nu.zmax = (+ extent().z * 0.5 ) / extent().max();
+            return nu;
+        }
+
+        constexpr vec4 map_norm_uniform(const vec4 &v) const {
+            return vec4(
+               ( extent().max() >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.x - xmin - ( extent().x * 0.5 ) ) / extent().max() ) ) * 2.0 ) : 0.0,
+               ( extent().max() >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.y - ymin - ( extent().y * 0.5 ) ) / extent().max() ) ) * 2.0 ) : 0.0,
+               ( extent().max() >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.z - zmin - ( extent().z * 0.5 ) ) / extent().max() ) ) * 2.0 ) : 0.0);
+        }
+
         constexpr vec4 map_norm(const vec4 &v) const {
             return vec4(
-               ( fabs_const( xmax - xmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.x - xmin ) / ( xmax - xmin ) ) - 0.5 ) * 2.0 ) : 0.0,
-               ( fabs_const( ymax - ymin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.y - ymin ) / ( ymax - ymin ) ) - 0.5 ) * 2.0 ) : 0.0,
-               ( fabs_const( zmax - zmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.z - zmin ) / ( zmax - zmin ) ) - 0.5 ) * 2.0 ) : 0.0);
+               ( extent().x >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.x - xmin ) / extent().x ) - 0.5 ) * 2.0 ) : 0.0,
+               ( extent().y >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.y - ymin ) / extent().y ) - 0.5 ) * 2.0 ) : 0.0,
+               ( extent().z >= std::numeric_limits<double>::epsilon() ) ? ( ( ( ( v.z - zmin ) / extent().z ) - 0.5 ) * 2.0 ) : 0.0);
         }
 
         constexpr vec4 map_unit(const vec4 &v) const {
             return vec4(
-               ( fabs_const( xmax - xmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.x - xmin ) / ( xmax - xmin ) ) : 0.0,
-               ( fabs_const( ymax - ymin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.y - ymin ) / ( ymax - ymin ) ) : 0.0,
-               ( fabs_const( zmax - zmin ) >= std::numeric_limits<double>::epsilon() ) ? ( ( v.z - zmin ) / ( zmax - zmin ) ) : 0.0);
+               ( extent().x >= std::numeric_limits<double>::epsilon() ) ? ( ( v.x - xmin ) / extent().x ) : 0.0,
+               ( extent().y >= std::numeric_limits<double>::epsilon() ) ? ( ( v.y - ymin ) / extent().y ) : 0.0,
+               ( extent().z >= std::numeric_limits<double>::epsilon() ) ? ( ( v.z - zmin ) / extent().z ) : 0.0);
         }
     };
 }

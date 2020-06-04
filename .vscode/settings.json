@@ -63,7 +63,11 @@
         "future": "cpp",
         "mutex": "cpp",
         "shared_mutex": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "bit": "cpp",
+        "complex": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp"
     },
     "C_Cpp.default.configurationProvider": "go2sh.cmake-integration"
 }

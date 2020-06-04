@@ -105,7 +105,7 @@ static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, ve
 }
 
 static fixture global_fixture(
-    make_vertical_fixture("A00", {192, 168, 1,103}, {   0.0,    0.0, 2000.0}, 0, 1)/*,
+    make_vertical_fixture("A00", {192, 168, 1,103}, {   0.0,    0.0, 2000.0}, 0, 1),
     make_vertical_fixture("A01", {192, 168, 1, 61}, {1000.0,    0.0, 2000.0}, 0, 1),
     make_vertical_fixture("A02", {192, 168, 1, 62}, {2000.0,    0.0, 2000.0}, 0, 1),
 
@@ -119,7 +119,7 @@ static fixture global_fixture(
 
     make_vertical_fixture("A09", {192, 168, 1, 69}, {   0.0, 3000.0, 2000.0}, 0, 1),
     make_vertical_fixture("A10", {192, 168, 1, 70}, {1000.0, 3000.0, 2000.0}, 0, 1),
-    make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)*/
+    make_vertical_fixture("A11", {192, 168, 1, 71}, {2000.0, 3000.0, 2000.0}, 0, 1)
 );
 
 }  // namespace ledstickler {
