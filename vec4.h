@@ -263,6 +263,18 @@ namespace ledstickler {
             return std::sqrt(xd*xd + yd*yd + zd*zd);
         }
 
+        constexpr double max() const {
+            return std::max(this->x,
+                        std::max(this->y,
+                            std::max(this->z, this->w)));
+        }
+
+        constexpr double min() const {
+            return std::min(this->x,
+                        std::min(this->y,
+                            std::min(this->z, this->w)));
+        }
+
         constexpr vec4 min(const vec4 &b) const {
             return vec4(std::min(this->x, b.x),
                         std::min(this->y, b.y),

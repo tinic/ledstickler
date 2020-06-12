@@ -109,6 +109,8 @@ namespace ledstickler {
             blendFunc = f;
         }
 
+        std::string json(fixture &f) const;
+
         timing tim;
         std::vector<timeline> timelines;
         std::vector<span> spans;
