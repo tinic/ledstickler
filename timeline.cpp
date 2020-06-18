@@ -26,25 +26,27 @@ template <typename T> static vec4 blend(const T &target, double time, const vec4
 }
 
 std::string timeline::json(fixture &f) const {
-    std::stringstream ss;
+
+    static std::stringstream ss;
+    ss.seekp(std::ios::beg); 
 
     ss << "{\n";
-    ss << "\t\"bounds\" : {\n";
-    ss << "\t\t\"xmin\" : " << f.bounds.norm_uniform().xmin << ",\n";
-    ss << "\t\t\"xmax\" : " << f.bounds.norm_uniform().xmax << ",\n";
-    ss << "\t\t\"ymin\" : " << f.bounds.norm_uniform().ymin << ",\n";
-    ss << "\t\t\"ymax\" : " << f.bounds.norm_uniform().ymax << ",\n";
-    ss << "\t\t\"zmin\" : " << f.bounds.norm_uniform().zmin << ",\n";
-    ss << "\t\t\"zmax\" : " << f.bounds.norm_uniform().zmax << "\n";
+    ss << "\t\"bounds\":{\n";
+    ss << "\t\t\"xmin\":" << f.bounds.norm_uniform().xmin << ",\n";
+    ss << "\t\t\"xmax\":" << f.bounds.norm_uniform().xmax << ",\n";
+    ss << "\t\t\"ymin\":" << f.bounds.norm_uniform().ymin << ",\n";
+    ss << "\t\t\"ymax\":" << f.bounds.norm_uniform().ymax << ",\n";
+    ss << "\t\t\"zmin\":" << f.bounds.norm_uniform().zmin << ",\n";
+    ss << "\t\t\"zmax\":" << f.bounds.norm_uniform().zmax << "\n";
     ss << "\t},\n";
 
-    ss << "\t\"points\" : [\n";
-    f.walk_fixtures( [&ss,&f] (const std::vector<const fixture *> &fixtures_stack) {
+    ss << "\t\"points\":[\n";
+    f.walk_fixtures( [&f] (const std::vector<const fixture *> &fixtures_stack) {
         const auto &ft = *fixtures_stack.front();
         if (!ft.name.size()) {
             return;
         }
-        std::for_each(ft.points.begin(), ft.points.end(), [&ss,&f] (auto item) { 
+        std::for_each(ft.points.begin(), ft.points.end(), [&f] (auto item) { 
             static constexpr color_convert<uint8_t> convert;
             const rgba<uint16_t> col(convert.CIELUV2LED(item.first));
             ss << "\t\t{";
