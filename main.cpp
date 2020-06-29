@@ -90,9 +90,9 @@ static timeline effect1({
 });
 
 static timeline master({
-    timing { 0.0, 120.0 }, 
-    timeline { timing {    0.0,  62.0, 2.0, 2.0 }, effect1, std::function(crossFade) },
-    timeline { timing {   60.0,  62.0, 2.0, 2.0 }, effect0, std::function(crossFade) },
+    timing { 0.0, 120.0 },  
+    timeline { timing {    0.0,  62.0, 2.0, 2.0 }, effect0, std::function(crossFade) },
+    timeline { timing {   60.0,  62.0, 2.0, 2.0 }, effect1, std::function(crossFade) },
 });
 
 static fixture make_vertical_fixture(const std::string &name, const ipv4 &ip, vec4 pos, uint16_t universe0, uint16_t universe1) {
@@ -123,7 +123,12 @@ static fixture global_fixture(
     make_vertical_fixture("A12", {192, 168, 1, 72}, {   0.0, 3000.0, 2000.0, 12.0}, 0, 1), // http://lightkraken-a477372d/
     make_vertical_fixture("A13", {192, 168, 1, 73}, {1000.0, 3000.0, 2000.0, 13.0}, 0, 1), // http://lightkraken-5c424ea8/
     make_vertical_fixture("A14", {192, 168, 1, 74}, {2000.0, 3000.0, 2000.0, 14.0}, 0, 1), // http://lightkraken-6149fdae/
-    make_vertical_fixture("A15", {192, 168, 1, 75}, {3000.0, 3000.0, 2000.0, 15.0}, 0, 1)  // http://lightkraken-540a733f/
+    make_vertical_fixture("A15", {192, 168, 1, 75}, {3000.0, 3000.0, 2000.0, 15.0}, 0, 1), // http://lightkraken-540a733f/
+
+    make_vertical_fixture("A16", {192, 168, 1, 76}, {3000.0, 3000.0, 2000.0, 15.0}, 0, 1), // http://lightkraken-758d111a/
+    make_vertical_fixture("A17", {192, 168, 1, 77}, {3000.0, 3000.0, 2000.0, 15.0}, 0, 1)  // http://lightkraken-d1b15ad9/
+
+    
 );
 
 }  // namespace ledstickler {
