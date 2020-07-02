@@ -119,11 +119,12 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
         const rgba<uint16_t> col(convert.CIELUV2LED(color_sum / double(point_count)));
         printf(" average color (r:%04x g:%04x b:%04x)", col.r, col.g, col.b);
         
-        std::string j(json(f));
-        socket.sendTo(0x7F000001, reinterpret_cast<const uint8_t *>(j.c_str()), j.size());
+        //std::string j(json(f));
+        //socket.sendTo(0x7F000001, reinterpret_cast<const uint8_t *>(j.c_str()), j.size());
         
         if (time > tim.duration) {
-            start_time = frame_time;
+            start_time = std::chrono::system_clock::now();
+            frame_time = start_time;
         }
     }
 }

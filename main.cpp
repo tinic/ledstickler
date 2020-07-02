@@ -49,7 +49,7 @@ static vec4 engineBlastoff(const span &, const std::vector<const fixture *> &fix
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
-    return gradient_engine.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.075 - time * 0.2000 - pos.w * 1.0 / 16.0)).z);
+    return gradient_engine.repeat(-((fixtures.front()->bounds.map_unit(pos) * 0.075 - time * 0.2000 - pos.w * 1.0 / 18.0)).z);
 }
 
 static vec4 justARainbow(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
@@ -63,7 +63,7 @@ static vec4 justAGradient(const span &, const std::vector<const fixture *> &fixt
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {
         return vec4();
     }
-    return gradient_ramp.reflect(-((fixtures.front()->bounds.map_unit(pos) * 4.0 + time * 0.2000 - pos.w * 2.0 / 13.0)).z);
+    return gradient_ramp.reflect(-((fixtures.front()->bounds.map_unit(pos) * 4.0 + time * 0.2000 - pos.w * 2.0 / 18.0)).z);
 }
 
 static vec4 background(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double) {
@@ -108,14 +108,15 @@ static fixture global_fixture(
     make_vertical_fixture("A00", {192, 168, 1, 60}, {   0.0,    0.0, 2000.0,  0.0}, 0, 1), // http://lightkraken-fcba318c/
     make_vertical_fixture("A01", {192, 168, 1, 61}, {1000.0,    0.0, 2000.0,  1.0}, 0, 1), // http://lightkraken-44a12e19/
     make_vertical_fixture("A02", {192, 168, 1, 62}, {2000.0,    0.0, 2000.0,  2.0}, 0, 1), // http://lightkraken-a0c5a315/
-    make_vertical_fixture("A03", {192, 168, 1, 63}, {3000.0,    0.0, 2000.0,  3.0}, 0, 1), // http://lightkraken-755806a7/
 
+    make_vertical_fixture("A03", {192, 168, 1, 63}, {3000.0,    0.0, 2000.0,  3.0}, 0, 1), // http://lightkraken-755806a7/
     make_vertical_fixture("A04", {192, 168, 1, 64}, {   0.0, 1000.0, 2000.0,  4.0}, 0, 1), // http://lightkraken-a8665d7e/
     make_vertical_fixture("A05", {192, 168, 1, 65}, {1000.0, 1000.0, 2000.0,  5.0}, 0, 1), // http://lightkraken-0c0078f5/
+
     make_vertical_fixture("A06", {192, 168, 1, 66}, {2000.0, 1000.0, 2000.0,  6.0}, 0, 1), // http://lightkraken-b196252d/
     make_vertical_fixture("A07", {192, 168, 1, 67}, {3000.0, 1000.0, 2000.0,  7.0}, 0, 1), // http://lightkraken-3e15a8d1/
-
     make_vertical_fixture("A08", {192, 168, 1, 68}, {   0.0, 2000.0, 2000.0,  8.0}, 0, 1), // http://lightkraken-3b9c4f9d/
+
     make_vertical_fixture("A09", {192, 168, 1, 69}, {1000.0, 2000.0, 2000.0,  9.0}, 0, 1), // http://lightkraken-31980c5c/
     make_vertical_fixture("A10", {192, 168, 1, 70}, {2000.0, 2000.0, 2000.0, 10.0}, 0, 1), // http://lightkraken-f3abccd6/
     make_vertical_fixture("A11", {192, 168, 1, 71}, {3000.0, 2000.0, 2000.0, 11.0}, 0, 1), // http://lightkraken-9f54b2db/
@@ -123,12 +124,10 @@ static fixture global_fixture(
     make_vertical_fixture("A12", {192, 168, 1, 72}, {   0.0, 3000.0, 2000.0, 12.0}, 0, 1), // http://lightkraken-a477372d/
     make_vertical_fixture("A13", {192, 168, 1, 73}, {1000.0, 3000.0, 2000.0, 13.0}, 0, 1), // http://lightkraken-5c424ea8/
     make_vertical_fixture("A14", {192, 168, 1, 74}, {2000.0, 3000.0, 2000.0, 14.0}, 0, 1), // http://lightkraken-6149fdae/
+
     make_vertical_fixture("A15", {192, 168, 1, 75}, {3000.0, 3000.0, 2000.0, 15.0}, 0, 1), // http://lightkraken-540a733f/
-
-    make_vertical_fixture("A16", {192, 168, 1, 76}, {3000.0, 3000.0, 2000.0, 15.0}, 0, 1), // http://lightkraken-758d111a/
-    make_vertical_fixture("A17", {192, 168, 1, 77}, {3000.0, 3000.0, 2000.0, 15.0}, 0, 1)  // http://lightkraken-d1b15ad9/
-
-    
+    make_vertical_fixture("A16", {192, 168, 1, 76}, {3000.0, 3000.0, 2000.0, 16.0}, 0, 1), // http://lightkraken-758d111a/
+    make_vertical_fixture("A17", {192, 168, 1, 77}, {3000.0, 3000.0, 2000.0, 17.0}, 0, 1)  // http://lightkraken-d1b15ad9/
 );
 
 }  // namespace ledstickler {
