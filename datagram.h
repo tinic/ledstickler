@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <string.h>
+#include <fcntl.h>
 #define TRUE 1
 #define FALSE 0
 #endif

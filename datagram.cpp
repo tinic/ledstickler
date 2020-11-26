@@ -45,6 +45,10 @@ datagram_socket::datagram_socket(uint16_t p, bool broadcast, bool reusesock) {
 #endif  // #ifdef WIN32
     }
 
+#ifndef WIN32
+    fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
+#endif  // #ifndef WIN32
+
     sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
