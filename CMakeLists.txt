@@ -1,5 +1,9 @@
 cmake_minimum_required (VERSION 3.13)
 project(ledstickler)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 add_executable (ledstickler "")
 target_sources (ledstickler PRIVATE main.cpp artnet.cpp datagram.cpp timeline.cpp)
 target_compile_options (ledstickler PRIVATE -flto -static-libgcc -Wall -Wextra -Wdouble-promotion -Wconversion -Wuseless-cast -Wlogical-op -Wshadow -Wfloat-conversion -Wnull-dereference -g -O3 -std=c++2a)
@@ -9,3 +13,7 @@ if(MINGW)
     target_compile_definitions(ledstickler PRIVATE WIN32)
 endif(MINGW)
 target_link_options (ledstickler PRIVATE -static-libgcc -flto)
+
+add_subdirectory(pistache)
+
+target_link_libraries(ledstickler PRIVATE pistache Threads::Threads)
