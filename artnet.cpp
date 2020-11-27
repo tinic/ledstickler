@@ -1,5 +1,8 @@
 #include "./artnet.h"
 #include "./color.h"
+#include "./fixture.h"
+
+#include <vector>
 
 namespace ledstickler {
 

@@ -1,11 +1,13 @@
 #ifndef _FIXTURE_H_
 #define _FIXTURE_H_
 
-#include <array>
-
 #include "./vec4.h"
 #include "./bounds.h"
 #include "./datagram.h"
+
+#include <array>
+#include <string>
+#include <functional>
 
 namespace ledstickler {
 

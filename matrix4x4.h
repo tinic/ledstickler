@@ -23,14 +23,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef _MATRIX4_H_
 #define _MATRIX4_H_
 
+#include "./array.h"
+#include "./vec4.h"
+
 #include <cstdint>
 #include <algorithm>
 #include <limits>
 #include <cmath>
 #include <cfloat>
-
-#include "./array.h"
-#include "./vec4.h"
 
 namespace ledstickler {
     struct matrix4x4 {

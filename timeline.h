@@ -1,10 +1,10 @@
 #ifndef TIMELINE_H_
 #define TIMELINE_H_
 
+#include "./fixture.h"
+
 #include <cstdint>
 #include <functional>
-
-#include "./fixture.h"
 
 namespace ledstickler {
 
