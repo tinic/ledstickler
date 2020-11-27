@@ -14,6 +14,4 @@ if(MINGW)
 endif(MINGW)
 target_link_options (ledstickler PRIVATE -static-libgcc -flto)
 
-add_subdirectory(pistache)
-
 target_link_libraries(ledstickler PRIVATE pistache Threads::Threads)
