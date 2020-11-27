@@ -13,5 +13,3 @@ if(MINGW)
     target_compile_definitions(ledstickler PRIVATE WIN32)
 endif(MINGW)
 target_link_options (ledstickler PRIVATE -static-libgcc -flto)
-
-target_link_libraries(ledstickler PRIVATE pistache Threads::Threads)
