@@ -1,5 +1,6 @@
+conan config install https://github.com/tinic/conan-profiles.git
 mkdir -p build
 cd build
-conan install .. --profile ..\conan_msys2_mingw.profile --build=missing
+conan install .. --profile msys2_mingw_gcc10_x64 --build=missing
 cmake -G "Ninja" ..
 ninja
