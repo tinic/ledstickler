@@ -19,3 +19,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     target_link_libraries(ledstickler http_parser fmt)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_options (ledstickler PRIVATE -static -static-libgcc -flto)
+    target_link_libraries(ledstickler http_parser fmt pthread)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
