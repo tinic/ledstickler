@@ -5,7 +5,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 add_executable (ledstickler "")
-target_sources (ledstickler PRIVATE main.cpp artnet.cpp datagram.cpp timeline.cpp)
+target_sources (ledstickler PRIVATE main.cpp artnet.cpp timeline.cpp)
 target_compile_options (ledstickler PRIVATE -flto -static-libgcc -Wall -Wextra -Wdouble-promotion -Wconversion -Wuseless-cast -Wlogical-op -Wshadow -Wfloat-conversion -Wnull-dereference -g -O3 -std=c++2a)
 
 if(MINGW)

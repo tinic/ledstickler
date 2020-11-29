@@ -6,13 +6,22 @@
 #include <iostream>
 #include <sstream>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion" 
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wlogical-op"
+#include <asio.hpp>
+#pragma GCC diagnostic pop
+
 #include "./timeline.h"
 #include "./artnet.h"
 #include "./color.h"
 
 namespace ledstickler {
-
-static datagram_socket socket(artnet_port);
+ 
+static asio::io_service io_service;
+static asio::ip::udp::socket socket(io_service);
 
 static size_t span_count = 0;
 static size_t point_count = 0;
@@ -70,6 +79,9 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
     std::chrono::system_clock::time_point start_time = std::chrono::system_clock::now();
     std::chrono::system_clock::time_point frame_time = start_time;
 
+    socket.open(asio::ip::udp::v4());
+    socket.non_blocking(true);
+
     for (;;) {
         double time = double( std::chrono::duration_cast<std::chrono::microseconds>(frame_time - start_time).count() ) / 1'000'000.0;
     
@@ -98,7 +110,8 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
             }
             auto packets = create_artnet_output_packets(ft);
             for (auto packet : packets) {
-                socket.sendTo(ft.address.addr(), static_cast<const uint8_t *>(packet.data()), packet.size());
+                socket.send_to(asio::buffer(static_cast<const void *>(packet.data()), packet.size()),
+                    asio::ip::udp::endpoint(asio::ip::make_address_v4(ft.address.addr()), artnet_port));
             }
         });
 
@@ -112,21 +125,21 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
             }
             std::for_each(ft.points.begin(), ft.points.end(), [] (auto item) { color_sum += item.first; } );
             constexpr auto sync_packet = make_arnet_sync_packet();
-            socket.sendTo(ft.address.addr(), sync_packet.data(), artnet_sync_packet_size);
+            socket.send_to(asio::buffer(static_cast<const void *>(sync_packet.data()), artnet_sync_packet_size),
+                asio::ip::udp::endpoint(asio::ip::make_address_v4(ft.address.addr()), artnet_port));
         });
 
         static constexpr color_convert<uint8_t> convert;
         const rgba<uint16_t> col(convert.CIELUV2LED(color_sum / double(point_count)));
         printf(" average color (r:%04x g:%04x b:%04x)", col.r, col.g, col.b);
         
-        //std::string j(json(f));
-        //socket.sendTo(0x7F000001, reinterpret_cast<const uint8_t *>(j.c_str()), j.size());
-        
         if (time > tim.duration) {
             start_time = std::chrono::system_clock::now();
             frame_time = start_time;
         }
     }
+
+    socket.close();
 }
 
 vec4 timeline::calc(double time, const std::vector<const fixture *> &fixtures_stack, const vec4& point, vec4 btm) {

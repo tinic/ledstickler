@@ -1,5 +1,6 @@
 [requires]
 restinio/0.6.12
+asio/1.18.0
 
 [generators]
 cmake
