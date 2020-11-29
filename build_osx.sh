@@ -1,5 +1,7 @@
 #!/bin/zsh
 mkdir -p build
 cd build
-cmake .. -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc
+conan install .. --profile ../conan_osx.profile --build=missing
+cmake .. -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_C_COMPILER=gcc-10
 make -j
+
