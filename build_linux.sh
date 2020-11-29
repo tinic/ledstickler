@@ -4,4 +4,4 @@ mkdir -p build
 cd build
 conan install .. --profile linux_gcc10_x64 --build=missing
 cmake -G "Ninja" ..
-ninja
+cmake --build .
