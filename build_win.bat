@@ -1,4 +1,5 @@
-mkdir build
+mkdir -p build
 cd build
-cmake -G Ninja -DWIN32=1 ..
+conan install .. --profile ..\conan_msys2_mingw.profile --build=missing
+cmake -G "Ninja" ..
 ninja
