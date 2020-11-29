@@ -8,6 +8,7 @@
 #pragma GCC diagnostic ignored "-Wconversion" 
 #pragma GCC diagnostic ignored "-Wuseless-cast"
 #pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wlogical-op"
 #include <restinio/all.hpp>
 #pragma GCC diagnostic pop
 
