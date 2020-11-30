@@ -25,33 +25,33 @@ namespace ledstickler {
 static uint64_t frame_time_us = 10'000;
 
 static constexpr gradient gradient_rainbow((const vec4[]){
-    srgb8_stop({0xff,0x00,0x00}, 0.00),
-    srgb8_stop({0xff,0xff,0x00}, 0.16),
-    srgb8_stop({0x00,0xff,0x00}, 0.33),
-    srgb8_stop({0x00,0xff,0xff}, 0.50),
-    srgb8_stop({0x00,0x00,0xff}, 0.66),
-    srgb8_stop({0xff,0x00,0xff}, 0.83),
-    srgb8_stop({0xff,0x00,0x00}, 1.00)},7);
+    srgb8_stop(rgba<uint8_t>{0xff,0x00,0x00}, 0.00),
+    srgb8_stop(rgba<uint8_t>{0xff,0xff,0x00}, 0.16),
+    srgb8_stop(rgba<uint8_t>{0x00,0xff,0x00}, 0.33),
+    srgb8_stop(rgba<uint8_t>{0x00,0xff,0xff}, 0.50),
+    srgb8_stop(rgba<uint8_t>{0x00,0x00,0xff}, 0.66),
+    srgb8_stop(rgba<uint8_t>{0xff,0x00,0xff}, 0.83),
+    srgb8_stop(rgba<uint8_t>{0xff,0x00,0x00}, 1.00)},7);
 
 static constexpr gradient gradient_engine((const vec4[]){
-    srgb8_stop({0x00,0x00,0x00}, 0.00),
-    srgb8_stop({0xff,0x00,0x00}, 0.01),
-    srgb8_stop({0xff,0xff,0x00}, 0.015),
-    srgb8_stop({0xff,0xff,0xff}, 0.02),
-    srgb8_stop({0xff,0xff,0x00}, 0.025),
-    srgb8_stop({0xff,0x00,0x00}, 0.03),
-    srgb8_stop({0x10,0x00,0x80}, 0.04),
-    srgb8_stop({0x10,0x00,0x20}, 0.06),
-    srgb8_stop({0x00,0x00,0x00}, 0.50),
-    srgb8_stop({0x00,0x00,0x00}, 1.00)},10);
+    srgb8_stop(rgba<uint8_t>{0x00,0x00,0x00}, 0.00),
+    srgb8_stop(rgba<uint8_t>{0xff,0x00,0x00}, 0.01),
+    srgb8_stop(rgba<uint8_t>{0xff,0xff,0x00}, 0.015),
+    srgb8_stop(rgba<uint8_t>{0xff,0xff,0xff}, 0.02),
+    srgb8_stop(rgba<uint8_t>{0xff,0xff,0x00}, 0.025),
+    srgb8_stop(rgba<uint8_t>{0xff,0x00,0x00}, 0.03),
+    srgb8_stop(rgba<uint8_t>{0x10,0x00,0x80}, 0.04),
+    srgb8_stop(rgba<uint8_t>{0x10,0x00,0x20}, 0.06),
+    srgb8_stop(rgba<uint8_t>{0x00,0x00,0x00}, 0.50),
+    srgb8_stop(rgba<uint8_t>{0x00,0x00,0x00}, 1.00)},10);
 
 static constexpr gradient gradient_engine_bg((const vec4[]){
-    srgb8_stop({0x80,0xff,0x80}, 0.00),
-    srgb8_stop({0x80,0x00,0x00}, 1.00)},2);
+    srgb8_stop(rgba<uint8_t>{0x80,0xff,0x80}, 0.00),
+    srgb8_stop(rgba<uint8_t>{0x80,0x00,0x00}, 1.00)},2);
 
 static constexpr gradient gradient_ramp((const vec4[]){
-    srgb8_stop({0xff,0xff,0xff}, 0.00),
-    srgb8_stop({0x00,0x00,0x00}, 1.00)},2);
+    srgb8_stop(rgba<uint8_t>{0xff,0xff,0xff}, 0.00),
+    srgb8_stop(rgba<uint8_t>{0x00,0x00,0x00}, 1.00)},2);
 
 static vec4 engineBlastoff(const span &, const std::vector<const fixture *> &fixtures, const vec4 &pos, double time) {
     if (fixtures.size() == 0 || fixtures.front() == nullptr) {

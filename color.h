@@ -14,7 +14,7 @@ namespace ledstickler {
         T b;
         T a;
 
-        constexpr rgba() :
+        explicit constexpr rgba() :
             r(0),
             g(0),
             b(0),
@@ -28,14 +28,14 @@ namespace ledstickler {
             a(from.a) {
         }
 
-        constexpr rgba(T _r, T _g, T _b) :
+        explicit constexpr rgba(T _r, T _g, T _b) :
             r(_r),
             g(_g),
             b(_b),
             a(0) {
         }
 
-        constexpr rgba(T _r, T _g, T _b, T _a) :
+        explicit constexpr rgba(T _r, T _g, T _b, T _a) :
             r(_r),
             g(_g),
             b(_b),
