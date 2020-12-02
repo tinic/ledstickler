@@ -116,8 +116,12 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
             }
             auto packets = create_artnet_output_packets(ft);
             for (auto packet : packets) {
-                socket.send_to(asio::buffer(static_cast<const void *>(packet.data()), packet.size()),
-                    asio::ip::udp::endpoint(asio::ip::make_address_v4(ft.address.addr()), artnet_port));
+                try {
+                    socket.send_to(asio::buffer(static_cast<const void *>(packet.data()), packet.size()),
+                        asio::ip::udp::endpoint(asio::ip::make_address_v4(ft.address.addr()), artnet_port));
+                }
+                catch (...) {
+                }
             }
         });
 
@@ -131,8 +135,12 @@ void timeline::run(fixture &f, uint64_t frame_time_us) {
             }
             std::for_each(ft.points.begin(), ft.points.end(), [] (auto item) { color_sum += item.first; } );
             constexpr auto sync_packet = make_arnet_sync_packet();
-            socket.send_to(asio::buffer(static_cast<const void *>(sync_packet.data()), artnet_sync_packet_size),
-                asio::ip::udp::endpoint(asio::ip::make_address_v4(ft.address.addr()), artnet_port));
+            try {
+                socket.send_to(asio::buffer(static_cast<const void *>(sync_packet.data()), artnet_sync_packet_size),
+                    asio::ip::udp::endpoint(asio::ip::make_address_v4(ft.address.addr()), artnet_port));
+            }
+            catch (...) {
+            }
         });
 
         static constexpr color_convert<uint8_t> convert;

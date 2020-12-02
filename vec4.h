@@ -29,7 +29,15 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cfloat>
 
 #if defined(__clang__) || defined(_MSC_VER)
+#if !defined(_MSC_VER)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-float-conversion" 
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+#endif  // #if !defined(_MSC_VER)
 #include <gcem.hpp>
+#if !defined(_MSC_VER)
+#pragma GCC diagnostic pop
+#endif  // #if !defined(_MSC_VER)
 #define math_prefix gcem
 #else // #if defined(__clang__) || defined(_MSC_VER)
 #define math_prefix std
