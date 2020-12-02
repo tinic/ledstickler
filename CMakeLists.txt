@@ -8,6 +8,10 @@ add_executable (ledstickler "")
 target_sources (ledstickler PRIVATE main.cpp artnet.cpp timeline.cpp)
 target_link_libraries(ledstickler PRIVATE http_parser fmt)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+	target_compile_options (ledstickler PRIVATE /std:c++17 /Oxs -D_WIN32_WINNT=0x0601)
+endif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	target_compile_options (ledstickler PRIVATE -flto -static-libgcc -Wall -Wextra -Wdouble-promotion -Wconversion -Wuseless-cast -Wlogical-op -Wshadow -Wfloat-conversion -Wnull-dereference -g -O3 -std=c++2a)
 	target_link_options (ledstickler PRIVATE -static-libgcc -flto)

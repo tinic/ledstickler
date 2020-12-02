@@ -40,9 +40,10 @@ template <typename T> static vec4 blend(const T &target, double time, const vec4
     return target.blendFunc(target, top, btm, in_f, out_f);
 }
 
+static std::stringstream ss;
+
 std::string timeline::json(fixture &f) const {
 
-    static std::stringstream ss;
     ss.seekp(std::ios::beg); 
 
     ss << "{\n";

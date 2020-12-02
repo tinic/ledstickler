@@ -2,6 +2,7 @@
 #include "./color.h"
 #include "./fixture.h"
 
+#include <iterator>
 #include <vector>
 
 namespace ledstickler {
