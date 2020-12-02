@@ -93,7 +93,7 @@ namespace ledstickler {
             for (size_t c = 0; c < colors_n; c++) {
                 double v = double(c) / static_cast<double>(colors_n - 1);
                 if (v > 0.04045) {
-                    sRGB2lRGB[c] = std::pow( (v + 0.055) / 1.055, 2.4);
+                    sRGB2lRGB[c] = math_prefix::pow( (v + 0.055) / 1.055, 2.4);
                 } else {
                     sRGB2lRGB[c] = v * ( 25.0 / 323.0 );
                 };
@@ -114,7 +114,7 @@ namespace ledstickler {
 
             constexpr double C0 = ( 6.0 / 29.0 ) * ( 6.0 / 29.0 ) * ( 6.0 / 29.0 );
             constexpr double C1 = ( 29.0 / 3.0 ) * ( 29.0 / 3.0 ) * ( 29.0 / 3.0 ) / 100.0;
-            double l = ( Y <= C0 ) ? ( C1 * Y ) : ( 1.16 * std::pow(Y, 1.0 / 3.0) - 0.16);
+            double l = ( Y <= C0 ) ? ( C1 * Y ) : ( 1.16 * math_prefix::pow(Y, 1.0 / 3.0) - 0.16);
             double d = X + 15.0 * Y + 3.0 * Z;
             double di = d != 0.0 ? ( 1.0 / d ) : 0.0;
 

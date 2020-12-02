@@ -12,7 +12,7 @@ namespace ledstickler {
 
     template<size_t colors_2n = 8> class gradient {
     public:
-        constexpr gradient(const vec4 stops[], const size_t n) {
+        constexpr gradient(const vec4 *stops, const size_t n) {
             for (size_t c = 0; c < colors_n; c++) {
                 double f = static_cast<double>(c) / static_cast<double>(colors_n - 1); 
                 auto a = stops[0];
@@ -39,7 +39,7 @@ namespace ledstickler {
         }
 
         constexpr vec4 reflect(double i) const {
-            i = std::fabs(i);
+            i = math_prefix::abs(i);
             if ((static_cast<int32_t>(i) & 1) == 0) {
                 i = ffrac(i);
             } else {

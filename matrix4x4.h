@@ -70,7 +70,7 @@ namespace ledstickler {
         constexpr bool operator==(const matrix4x4 &b) const {
             for (size_t c = 0; c < 4; c++) {
                 for (size_t d = 0; d < 4; d++) {
-                    if (std::fabs((*this).m[c][d] - b.m[c][d]) >= std::numeric_limits<double>::epsilon()) {
+                    if (math_prefix::abs((*this).m[c][d] - b.m[c][d]) >= std::numeric_limits<double>::epsilon()) {
                         return false;
                     }
                 }
@@ -81,7 +81,7 @@ namespace ledstickler {
         constexpr bool operator!=(const matrix4x4 &b) const {
             for (size_t c = 0; c < 4; c++) {
                 for (size_t d = 0; d < 4; d++) {
-                    if (std::fabs((*this).m[c][d] - b.m[c][d]) < std::numeric_limits<double>::epsilon()) {
+                    if (math_prefix::abs((*this).m[c][d] - b.m[c][d]) < std::numeric_limits<double>::epsilon()) {
                         return false;
                     }
                 }

@@ -21,7 +21,7 @@ std::vector<std::vector<uint8_t>> create_artnet_output_packets(const fixture &f)
     auto iter = f.points.begin();
     for (size_t len = f.points.size(); len > 0; ) {
         size_t chunk_len = std::min(artnet_dmx_len / (3 * 2), len);
-        std::vector<std::pair<vec4, vec4>> chunk(iter, iter + chunk_len);
+        std::vector<std::pair<vec4, vec4>> chunk(iter, iter + off_t(chunk_len));
         
         std::vector<uint8_t> packet;
 
@@ -55,7 +55,7 @@ std::vector<std::vector<uint8_t>> create_artnet_output_packets(const fixture &f)
         packets.push_back(packet);
 
         len -= chunk_len;
-        iter += chunk_len;
+        iter += off_t(chunk_len);
         uni_index++;
     }
     

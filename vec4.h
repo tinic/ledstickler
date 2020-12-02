@@ -28,6 +28,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cmath>
 #include <cfloat>
 
+#if defined(__clang__) || defined(_MSC_VER)
+#include <gcem.hpp>
+#define math_prefix gcem
+#else // #if defined(__clang__) || defined(_MSC_VER)
+#define math_prefix std
+#endif // #if defined(__clang__) || defined(_MSC_VER)
+
+
 namespace ledstickler {
 
     static constexpr inline double fabs_const(const double x) {
@@ -110,10 +118,10 @@ namespace ledstickler {
         }
 
         constexpr vec4 &operator%=(double v) {
-            this->x = std::fmod(this->x, v);
-            this->y = std::fmod(this->y, v);
-            this->z = std::fmod(this->z, v);
-            this->w = std::fmod(this->w, v);
+            this->x = math_prefix::fmod(this->x, v);
+            this->y = math_prefix::fmod(this->y, v);
+            this->z = math_prefix::fmod(this->z, v);
+            this->w = math_prefix::fmod(this->w, v);
             return *this;
         }
         
@@ -150,10 +158,10 @@ namespace ledstickler {
         }
 
         constexpr vec4 &operator%=(const vec4 &b) {
-            this->x = std::fmod(this->x, b.x);
-            this->y = std::fmod(this->y, b.y);
-            this->z = std::fmod(this->z, b.z);
-            this->w = std::fmod(this->w, b.w);
+            this->x = math_prefix::fmod(this->x, b.x);
+            this->y = math_prefix::fmod(this->y, b.y);
+            this->z = math_prefix::fmod(this->z, b.z);
+            this->w = math_prefix::fmod(this->w, b.w);
             return *this;
         }
 
@@ -200,10 +208,10 @@ namespace ledstickler {
         }
 
         vec4 operator%(double v) const {
-            return vec4(std::fmod(this->x,v),
-                        std::fmod(this->y,v),
-                        std::fmod(this->z,v),
-                        std::fmod(this->w,v));
+            return vec4(math_prefix::fmod(this->x,v),
+                        math_prefix::fmod(this->y,v),
+                        math_prefix::fmod(this->z,v),
+                        math_prefix::fmod(this->w,v));
         }
         
         constexpr vec4 operator+(const vec4 &b) const {
@@ -235,32 +243,32 @@ namespace ledstickler {
         }
 
         constexpr vec4 operator%(const vec4 &b) const {
-            return vec4(std::fmod(this->x,b.x),
-                        std::fmod(this->y,b.y),
-                        std::fmod(this->z,b.z),
-                        std::fmod(this->w,b.w));
+            return vec4(math_prefix::fmod(this->x,b.x),
+                        math_prefix::fmod(this->y,b.y),
+                        math_prefix::fmod(this->z,b.z),
+                        math_prefix::fmod(this->w,b.w));
         }
         
         constexpr double len() {
-            return std::sqrt(x*x + y*y + z*z);
+            return math_prefix::sqrt(x*x + y*y + z*z);
         }
 
         constexpr double len(const vec4 &a) {
-            return std::sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
+            return math_prefix::sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
         }
         
         constexpr double dist(const vec4 &b) {
             double xd = fabs_const(this->x - b.x);
             double yd = fabs_const(this->y - b.y);
             double zd = fabs_const(this->z - b.z);
-            return std::sqrt(xd*xd + yd*yd + zd*zd);
+            return math_prefix::sqrt(xd*xd + yd*yd + zd*zd);
         }
 
         static double dist(const vec4 &a, const vec4 &b) {
             double xd = fabs_const(a.x - b.x);
             double yd = fabs_const(a.y - b.y);
             double zd = fabs_const(a.z - b.z);
-            return std::sqrt(xd*xd + yd*yd + zd*zd);
+            return math_prefix::sqrt(xd*xd + yd*yd + zd*zd);
         }
 
         constexpr double max() const {
@@ -304,10 +312,10 @@ namespace ledstickler {
         }
         
         constexpr vec4 pow(double v) const {
-            return vec4(std::pow(this->x, v),
-                        std::pow(this->y, v),
-                        std::pow(this->z, v),
-                        std::pow(this->w, v));
+            return vec4(math_prefix::pow(this->x, v),
+                        math_prefix::pow(this->y, v),
+                        math_prefix::pow(this->z, v),
+                        math_prefix::pow(this->w, v));
         }
         
         constexpr vec4 abs() const {
@@ -361,23 +369,23 @@ namespace ledstickler {
         }
 
         constexpr vec4 sqrt() {
-            return vec4(std::sqrt(this->x),
-                        std::sqrt(this->y),
-                        std::sqrt(this->z),
-                        std::sqrt(this->w));
+            return vec4(math_prefix::sqrt(this->x),
+                        math_prefix::sqrt(this->y),
+                        math_prefix::sqrt(this->z),
+                        math_prefix::sqrt(this->w));
         }
 
         static constexpr vec4 sqrt(const vec4 &a) {
-            return vec4(std::sqrt(a.x),
-                        std::sqrt(a.y),
-                        std::sqrt(a.z),
-                        std::sqrt(a.w));
+            return vec4(math_prefix::sqrt(a.x),
+                        math_prefix::sqrt(a.y),
+                        math_prefix::sqrt(a.z),
+                        math_prefix::sqrt(a.w));
         }
         
         constexpr vec4 rotate2d(double angle) {
             return vec4(
-                this->x * std::cos(angle) - this->y * std::sin(angle),
-                this->y * std::cos(angle) + this->x * std::sin(angle),
+                this->x * math_prefix::cos(angle) - this->y * math_prefix::sin(angle),
+                this->y * math_prefix::cos(angle) + this->x * math_prefix::sin(angle),
                 this->z,
                 this->w);
         }
@@ -391,17 +399,17 @@ namespace ledstickler {
         }
         
         constexpr vec4 rsqrt() {
-            return vec4((this->x != 0.0) ? (1.0/std::sqrt(this->x)) : 0.0,
-                        (this->y != 0.0) ? (1.0/std::sqrt(this->y)) : 0.0,
-                        (this->z != 0.0) ? (1.0/std::sqrt(this->z)) : 0.0,
-                        (this->w != 0.0) ? (1.0/std::sqrt(this->w)) : 0.0);
+            return vec4((this->x != 0.0) ? (1.0/math_prefix::sqrt(this->x)) : 0.0,
+                        (this->y != 0.0) ? (1.0/math_prefix::sqrt(this->y)) : 0.0,
+                        (this->z != 0.0) ? (1.0/math_prefix::sqrt(this->z)) : 0.0,
+                        (this->w != 0.0) ? (1.0/math_prefix::sqrt(this->w)) : 0.0);
         }
 
         static vec4 rsqrt(const vec4 &a) {
-            return vec4((a.x != 0.0) ? (1.0/std::sqrt(a.x)) : 0.0,
-                        (a.y != 0.0) ? (1.0/std::sqrt(a.y)) : 0.0,
-                        (a.z != 0.0) ? (1.0/std::sqrt(a.z)) : 0.0,
-                        (a.w != 0.0) ? (1.0/std::sqrt(a.w)) : 0.0);
+            return vec4((a.x != 0.0) ? (1.0/math_prefix::sqrt(a.x)) : 0.0,
+                        (a.y != 0.0) ? (1.0/math_prefix::sqrt(a.y)) : 0.0,
+                        (a.z != 0.0) ? (1.0/math_prefix::sqrt(a.z)) : 0.0,
+                        (a.w != 0.0) ? (1.0/math_prefix::sqrt(a.w)) : 0.0);
         }
 
         constexpr vec4 rcp() const {
@@ -460,9 +468,9 @@ namespace ledstickler {
         constexpr double reflect(double i) {
             i = fabs_const(i);
             if ((static_cast<int32_t>(i) & 1) == 0) {
-                i -= std::floor(i);
+                i -= math_prefix::floor(i);
             } else {
-                i -= std::floor(i);
+                i -= math_prefix::floor(i);
                 i = 1.0 - i;
             }
             return i;

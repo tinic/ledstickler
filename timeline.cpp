@@ -6,13 +6,19 @@
 #include <iostream>
 #include <sstream>
 
+#if !defined(_MSC_VER)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion" 
-#pragma GCC diagnostic ignored "-Wuseless-cast"
 #pragma GCC diagnostic ignored "-Wshadow"
+#if !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wuseless-cast"
 #pragma GCC diagnostic ignored "-Wlogical-op"
+#endif  // #if !defined(__clang__)
+#endif  // #if !defined(_MSC_VER)
 #include <asio.hpp>
+#if !defined(_MSC_VER)
 #pragma GCC diagnostic pop
+#endif  // #if !defined(_MSC_VER)
 
 #include "./timeline.h"
 #include "./artnet.h"
