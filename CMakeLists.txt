@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.13)
 project(ledstickler)
 
-set(CONAN_DISABLE_CHECK_COMPILER true)
+set(CONAN_DISABLE_CHECK_COMPILER True CACHE BOOL "" FORCE )
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
