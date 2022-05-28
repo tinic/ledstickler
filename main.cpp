@@ -4,20 +4,6 @@
 #include <functional>
 #include <cstring>
 
-#if !defined(_MSC_VER)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion" 
-#pragma GCC diagnostic ignored "-Wshadow"
-#if !defined(__clang__)
-#pragma GCC diagnostic ignored "-Wuseless-cast"
-#pragma GCC diagnostic ignored "-Wlogical-op"
-#endif  // #if !defined(__clang__)
-#endif  // #if !defined(_MSC_VER)
-#include <restinio/all.hpp>
-#if !defined(_MSC_VER)
-#pragma GCC diagnostic pop
-#endif  // #if !defined(_MSC_VER)
-
 #include "./vec4.h"
 #include "./matrix4x4.h"
 #include "./gradient.h"
@@ -152,24 +138,7 @@ static fixture global_fixture(
 
 int main() {
 
-	restinio::http_server_t<> server{
-	    restinio::own_io_context(),
-	    [](auto & settings) {
-		    settings.port(0x13D5); // 5077
-		    settings.address("localhost");
-		    settings.request_handler([](auto req) {
-				return req->create_response().set_body("Hello, LEDS!").done();
-		    });
-	    }
-	};
-	
-	std::thread restinio_control_thread{ [&server] {
-		restinio::run(restinio::on_thread_pool(4, restinio::skip_break_signal_handling(), server));
-	}};
-	
     ledstickler::master.run(ledstickler::global_fixture, ledstickler::frame_time_us);
 	
-	restinio::initiate_shutdown(server);
-	restinio_control_thread.join();
     return 0;
 }
